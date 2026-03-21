@@ -1,33 +1,58 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
-import pinoHttp from "pino-http";
+import cookieParser from "cookie-parser";
 import router from "./routes";
-import { logger } from "./lib/logger";
 
 const app: Express = express();
 
-app.use(
-  pinoHttp({
-    logger,
-    serializers: {
-      req(req) {
-        return {
-          id: req.id,
-          method: req.method,
-          url: req.url?.split("?")[0],
-        };
-      },
-      res(res) {
-        return {
-          statusCode: res.statusCode,
-        };
-      },
-    },
-  }),
-);
-app.use(cors());
+app.use(cors({
+  credentials: true,
+  origin: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(async (req: Request, _res: Response, next: NextFunction) => {
+  const replUserId = req.headers["x-replit-user-id"];
+  const replUserName = req.headers["x-replit-user-name"];
+  const replUserProfileImage = req.headers["x-replit-user-profile-image"];
+
+  if (replUserId && replUserName && typeof replUserId === "string" && typeof replUserName === "string") {
+    (req as any).userId = replUserId;
+    (req as any).replitUser = {
+      id: replUserId,
+      username: replUserName,
+      name: replUserName,
+      profileImage: typeof replUserProfileImage === "string" ? replUserProfileImage : null,
+    };
+
+    try {
+      const { db } = await import("@workspace/db");
+      const { usersTable } = await import("@workspace/db/schema");
+      const { eq } = await import("drizzle-orm");
+
+      const [existing] = await db.select().from(usersTable).where(eq(usersTable.id, replUserId));
+      if (!existing) {
+        await db.insert(usersTable).values({
+          id: replUserId,
+          username: replUserName,
+          name: replUserName,
+          email: null,
+          avatarUrl: typeof replUserProfileImage === "string" ? replUserProfileImage : null,
+          totalXp: 0,
+          level: 1,
+          streak: 0,
+          lastLoginDate: new Date().toISOString().split("T")[0],
+        });
+      }
+    } catch (err) {
+      console.error("Error upserting user:", err);
+    }
+  }
+
+  next();
+});
 
 app.use("/api", router);
 

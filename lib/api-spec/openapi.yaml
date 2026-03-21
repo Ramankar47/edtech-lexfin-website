@@ -1,22 +1,34 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: LexFin Financial Literacy API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication
+  - name: user
+    description: User profile and stats
+  - name: modules
+    description: Learning modules
+  - name: lessons
+    description: Lessons within modules
+  - name: progress
+    description: User learning progress
+  - name: puzzles
+    description: Puzzle challenges
+  - name: activity
+    description: Recent activity feed
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +36,217 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current user
+      responses:
+        "200":
+          description: Current user info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /user/stats:
+    get:
+      operationId: getUserStats
+      tags: [user]
+      summary: Get user stats (XP, level, streak, puzzles solved)
+      responses:
+        "200":
+          description: User stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserStats"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /modules:
+    get:
+      operationId: getModules
+      tags: [modules]
+      summary: Get all learning modules
+      responses:
+        "200":
+          description: List of modules
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Module"
+
+  /modules/{moduleId}:
+    get:
+      operationId: getModule
+      tags: [modules]
+      summary: Get a specific module with its lessons
+      parameters:
+        - name: moduleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Module with lessons
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ModuleWithLessons"
+        "404":
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /lessons/{lessonId}:
+    get:
+      operationId: getLesson
+      tags: [lessons]
+      summary: Get a lesson with its questions
+      parameters:
+        - name: lessonId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lesson with questions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LessonWithQuestions"
+        "404":
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /progress/complete-lesson:
+    post:
+      operationId: completeLesson
+      tags: [progress]
+      summary: Mark a lesson complete and award XP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CompleteLessonRequest"
+      responses:
+        "200":
+          description: Updated user stats after completion
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CompleteLessonResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /puzzles:
+    get:
+      operationId: getPuzzles
+      tags: [puzzles]
+      summary: Get available puzzles for the user
+      responses:
+        "200":
+          description: List of puzzles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Puzzle"
+
+  /puzzles/{puzzleId}/submit:
+    post:
+      operationId: submitPuzzle
+      tags: [puzzles]
+      summary: Submit a puzzle answer
+      parameters:
+        - name: puzzleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitPuzzleRequest"
+      responses:
+        "200":
+          description: Puzzle result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SubmitPuzzleResponse"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /activity:
+    get:
+      operationId: getActivity
+      tags: [activity]
+      summary: Get recent activity for the current user
+      responses:
+        "200":
+          description: Recent activity items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ActivityItem"
+        "401":
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /badges:
+    get:
+      operationId: getBadges
+      tags: [user]
+      summary: Get all badges with earned status
+      responses:
+        "200":
+          description: List of badges
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Badge"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +257,324 @@ components:
       required:
         - status
 
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+      required:
+        - id
+        - username
+        - name
+        - createdAt
+
+    UserStats:
+      type: object
+      properties:
+        totalXp:
+          type: integer
+        level:
+          type: integer
+        streak:
+          type: integer
+        puzzlesSolved:
+          type: integer
+        lessonsCompleted:
+          type: integer
+        xpToNextLevel:
+          type: integer
+        xpProgress:
+          type: integer
+      required:
+        - totalXp
+        - level
+        - streak
+        - puzzlesSolved
+        - lessonsCompleted
+        - xpToNextLevel
+        - xpProgress
+
+    Module:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        orderIndex:
+          type: integer
+        status:
+          type: string
+          enum: [locked, active, completed]
+        totalLessons:
+          type: integer
+        completedLessons:
+          type: integer
+        xpReward:
+          type: integer
+      required:
+        - id
+        - title
+        - description
+        - icon
+        - orderIndex
+        - status
+        - totalLessons
+        - completedLessons
+        - xpReward
+
+    ModuleWithLessons:
+      allOf:
+        - $ref: "#/components/schemas/Module"
+        - type: object
+          properties:
+            lessons:
+              type: array
+              items:
+                $ref: "#/components/schemas/Lesson"
+          required:
+            - lessons
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: integer
+        moduleId:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        orderIndex:
+          type: integer
+        status:
+          type: string
+          enum: [locked, active, completed]
+        xpReward:
+          type: integer
+        lessonType:
+          type: string
+          enum: [quiz, puzzle, reading]
+        totalQuestions:
+          type: integer
+      required:
+        - id
+        - moduleId
+        - title
+        - description
+        - orderIndex
+        - status
+        - xpReward
+        - lessonType
+        - totalQuestions
+
+    LessonWithQuestions:
+      allOf:
+        - $ref: "#/components/schemas/Lesson"
+        - type: object
+          properties:
+            questions:
+              type: array
+              items:
+                $ref: "#/components/schemas/Question"
+          required:
+            - questions
+
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+        lessonId:
+          type: integer
+        questionText:
+          type: string
+        questionType:
+          type: string
+          enum: [multiple_choice, true_false, fill_blank]
+        options:
+          type: array
+          items:
+            type: string
+          nullable: true
+        correctAnswer:
+          type: string
+        explanation:
+          type: string
+        orderIndex:
+          type: integer
+      required:
+        - id
+        - lessonId
+        - questionText
+        - questionType
+        - correctAnswer
+        - explanation
+        - orderIndex
+
+    CompleteLessonRequest:
+      type: object
+      properties:
+        lessonId:
+          type: integer
+        score:
+          type: integer
+        totalQuestions:
+          type: integer
+      required:
+        - lessonId
+        - score
+        - totalQuestions
+
+    CompleteLessonResponse:
+      type: object
+      properties:
+        xpEarned:
+          type: integer
+        newTotalXp:
+          type: integer
+        newLevel:
+          type: integer
+        leveledUp:
+          type: boolean
+        badgesEarned:
+          type: array
+          items:
+            $ref: "#/components/schemas/Badge"
+        streakUpdated:
+          type: boolean
+      required:
+        - xpEarned
+        - newTotalXp
+        - newLevel
+        - leveledUp
+        - badgesEarned
+        - streakUpdated
+
+    Puzzle:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        difficulty:
+          type: string
+          enum: [easy, medium, hard]
+        puzzleType:
+          type: string
+          enum: [scenario, match, drag_order, true_false]
+        xpReward:
+          type: integer
+        isNew:
+          type: boolean
+        isCompleted:
+          type: boolean
+        content:
+          type: object
+          nullable: true
+          additionalProperties: true
+      required:
+        - id
+        - title
+        - description
+        - difficulty
+        - puzzleType
+        - xpReward
+        - isNew
+        - isCompleted
+
+    SubmitPuzzleRequest:
+      type: object
+      properties:
+        answer:
+          type: string
+      required:
+        - answer
+
+    SubmitPuzzleResponse:
+      type: object
+      properties:
+        correct:
+          type: boolean
+        xpEarned:
+          type: integer
+        explanation:
+          type: string
+        newTotalXp:
+          type: integer
+      required:
+        - correct
+        - xpEarned
+        - explanation
+        - newTotalXp
+
+    ActivityItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          enum: [lesson_complete, puzzle_solved, badge_earned, level_up, streak]
+        description:
+          type: string
+        xpEarned:
+          type: integer
+        createdAt:
+          type: string
+      required:
+        - id
+        - type
+        - description
+        - xpEarned
+        - createdAt
+
+    Badge:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        icon:
+          type: string
+        earned:
+          type: boolean
+        earnedAt:
+          type: string
+          nullable: true
+      required:
+        - id
+        - name
+        - description
+        - icon
+        - earned

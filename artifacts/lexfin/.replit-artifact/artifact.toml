@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "LexFin - Financial Literacy"
+version = "1.0.0"
+id = "artifacts/lexfin"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+localPort = 24030
+name = "web"
+paths = ["/"]
+
+[services.development]
+run = "pnpm --filter @workspace/lexfin run dev"
+
+[services.env]
+PORT = "24030"
+BASE_PATH = "/"
+
+[services.production]
+build = ["pnpm", "--filter", "@workspace/lexfin", "run", "build"]
+publicDir = "artifacts/lexfin/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"

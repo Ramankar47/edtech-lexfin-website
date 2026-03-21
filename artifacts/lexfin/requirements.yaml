@@ -1,0 +1,21 @@
+packages:
+  "framer-motion": "For playful, bouncy gamified animations and page transitions"
+  "canvas-confetti": "For celebration effects when completing lessons and leveling up"
+  "clsx": "Utility for constructing className strings conditionally"
+  "tailwind-merge": "Utility to merge tailwind classes without style conflicts"
+  "date-fns": "For formatting recent activity timestamps and streak calendars"
+  "@radix-ui/react-dialog": "For accessible modal dialogs for lessons"
+  "@radix-ui/react-slot": "For component composition"
+  "@radix-ui/react-toast": "For XP toast notifications"
+
+images:
+  - path: "artifacts/lexfin/public/images/hero-illustration.png"
+    description: "3D rendered illustration of a cute, stylized law scale balancing coins and books, warm purple and cream color palette, soft lighting, gamified duolingo style"
+    aspect_ratio: "16:9"
+  - path: "artifacts/lexfin/public/images/avatar-placeholder.png"
+    description: "Cute 3D rendered student avatar character, smiling, warm purple background, duolingo style"
+    aspect_ratio: "1:1"
+
+notes:
+  - Using generated React Query hooks directly from @workspace/api-client-react as per implementation notes.
+  - Relying on Replit Auth endpoints (/api/auth/login and /api/auth/logout) for authentication.
