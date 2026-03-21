@@ -4,7 +4,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "@/pages/landing";
 import Dashboard from "@/pages/dashboard";
-import ModulesPage from "@/pages/modules";
+import CoursesPage from "@/pages/courses";
+import LearningPathPage from "@/pages/learning-path";
+import BlogsPage from "@/pages/blogs";
+import StudyMaterialPage from "@/pages/study-material";
+import RegulatoryAlertsPage from "@/pages/regulatory-alerts";
 import UnitLearnPage from "@/pages/unit-learn";
 import NotFound from "@/pages/not-found";
 
@@ -21,7 +25,11 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Landing} />
-      <Route path="/modules" component={ModulesPage} />
+      <Route path="/courses" component={CoursesPage} />
+      <Route path="/learning-path" component={LearningPathPage} />
+      <Route path="/blogs" component={BlogsPage} />
+      <Route path="/study-material" component={StudyMaterialPage} />
+      <Route path="/regulatory-alerts" component={RegulatoryAlertsPage} />
       <Route path="/module/:moduleId/learn" component={UnitLearnPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route component={NotFound} />

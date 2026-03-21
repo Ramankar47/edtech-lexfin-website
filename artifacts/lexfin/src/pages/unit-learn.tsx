@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useParams } from "wouter";
 import {
-  ArrowLeft, BookOpen, Headphones, Video, ChevronRight,
-  Check, X, Star, Zap, Trophy, Lock, Play, Pause, Volume2
+  ArrowLeft, BookOpen, Headphones, Video,
+  Check, X, Star, Zap, Trophy, Play, Pause, Volume2
 } from "lucide-react";
 import { GameButton } from "@/components/ui/game-button";
+import { GlobalHeader } from "@/components/GlobalHeader";
 import confetti from "canvas-confetti";
 
 const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -63,7 +64,7 @@ export default function UnitLearnPage() {
   const [puzzleCorrect, setPuzzleCorrect] = useState(false);
 
   if (loading) return <LoadingScreen />;
-  if (error || !data) return <ErrorScreen onBack={() => setLocation("/modules")} />;
+  if (error || !data) return <ErrorScreen onBack={() => setLocation("/learning-path")} />;
 
   const totalXP = quiz1Score + quiz2Score + (puzzleCorrect ? data.puzzle[0]?.xp || 100 : 0);
 
@@ -92,16 +93,18 @@ export default function UnitLearnPage() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Progress Header */}
+      {/* Global nav header with LexFin logo and nav tabs */}
+      <GlobalHeader />
+      {/* Progress sub-header */}
       <UnitHeader
         info={data.info}
         step={step}
         xpEarned={xpEarned}
-        onBack={() => setLocation("/modules")}
+        onBack={() => setLocation("/learning-path")}
       />
 
-      {/* Step Content */}
-      <main className="flex-1 flex flex-col items-center px-4 py-6 max-w-2xl mx-auto w-full">
+      {/* Step Content — wider on desktop */}
+      <main className="flex-1 flex flex-col items-center px-4 py-6 max-w-3xl mx-auto w-full">
         {step === "content" && (
           <ContentStep
             data={data}
@@ -135,7 +138,7 @@ export default function UnitLearnPage() {
             info={data.info}
             totalXP={xpEarned}
             moduleId={parseInt(moduleId)}
-            onReturn={() => setLocation("/modules")}
+            onReturn={() => setLocation("/learning-path")}
           />
         )}
       </main>
@@ -156,8 +159,8 @@ function UnitHeader({ info, step, xpEarned, onBack }: {
   };
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b-2 border-border shadow-sm">
-      <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-3">
+    <header className="sticky top-16 z-40 bg-white border-b-2 border-border shadow-sm">
+      <div className="max-w-3xl mx-auto px-4 py-3 flex items-center gap-3">
         <button onClick={onBack} className="p-2 hover:bg-secondary rounded-xl transition-colors">
           <ArrowLeft className="h-5 w-5 text-muted-foreground" />
         </button>

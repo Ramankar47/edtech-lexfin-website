@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexFin — Courses</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F0EDE6; --surface: #FAFAF7; --ink: #1C1A28; --ink2: #5A576B; --ink3: #9A97A8;
+  --purple: #5A4FD6; --purple-lt: #EAE8FB; --purple-dk: #3D34A5;
+  --gold: #C9933A; --gold-lt: #FBF3E3;
+  --teal: #2A8C72; --teal-lt: #E2F3EE;
+  --border: #E0DCCE; --r: 14px; --r-sm: 8px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+/* HEADER */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(240,237,230,0.88); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+}
+.logo { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 18px; color: var(--ink); text-decoration: none; }
+.logo-icon { width: 32px; height: 32px; background: var(--purple); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+nav { display: flex; align-items: center; gap: 4px; }
+nav a { font-size: 14px; color: var(--ink2); text-decoration: none; padding: 7px 14px; border-radius: 6px; transition: all .18s; }
+nav a:hover { color: var(--ink); background: rgba(90,79,214,.07); }
+nav a.active { color: var(--purple); font-weight: 500; background: var(--purple-lt); }
+.header-cta { background: var(--ink); color: #fff; border: none; padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .18s; }
+.header-cta:hover { background: var(--purple); }
+
+/* PAGE HEAD */
+.page-head { padding: 60px 48px 48px; border-bottom: 1px solid var(--border); }
+.eyebrow { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; color: var(--purple); margin-bottom: 16px; }
+.eyebrow::before { content: ''; display: block; width: 20px; height: 2px; background: var(--purple); border-radius: 2px; }
+h1 { font-family: 'Fraunces', serif; font-size: clamp(34px,4.5vw,50px); font-weight: 700; line-height: 1.08; letter-spacing: -.02em; }
+h1 em { font-style: italic; font-weight: 300; color: var(--purple); }
+.page-desc { margin-top: 12px; font-size: 16px; color: var(--ink2); line-height: 1.65; max-width: 500px; }
+
+/* AFFIL STRIP */
+.affil-strip { padding: 16px 48px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.affil-logo { width: 36px; height: 36px; background: var(--purple); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.affil-text { font-size: 13px; color: var(--ink2); }
+.affil-text strong { color: var(--ink); font-weight: 500; }
+
+/* COURSE WRAP */
+.course-wrap { padding: 48px; }
+.course-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; overflow: hidden; animation: fadeUp .45s ease both; }
+@keyframes fadeUp { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }
+
+/* TOP BAND */
+.card-band { background: var(--ink); padding: 40px 48px 36px; display: flex; align-items: flex-start; justify-content: space-between; gap: 32px; position: relative; overflow: hidden; }
+.card-band::before { content:''; position:absolute; right:-60px; top:-60px; width:300px; height:300px; background:var(--purple); opacity:.1; border-radius:50%; pointer-events:none; }
+.card-band::after  { content:''; position:absolute; right:160px; bottom:-80px; width:200px; height:200px; background:var(--gold); opacity:.07; border-radius:50%; pointer-events:none; }
+.band-left { flex:1; position:relative; z-index:1; }
+.new-badge { display:inline-flex; align-items:center; gap:5px; background:var(--gold); color:#fff; font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:100px; margin-bottom:18px; }
+.course-title { font-family:'Fraunces',serif; font-size:clamp(22px,3vw,34px); font-weight:700; line-height:1.12; color:#fff; letter-spacing:-.02em; margin-bottom:10px; }
+.course-subtitle { font-size:14px; color:rgba(255,255,255,.5); line-height:1.6; max-width:480px; }
+.band-right { display:flex; flex-direction:column; gap:10px; flex-shrink:0; position:relative; z-index:1; align-items:flex-end; }
+.cert-pill { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.8); font-size:12px; font-weight:500; padding:7px 14px; border-radius:100px; }
+.cert-pill svg { width:13px; height:13px; }
+.affil-pill { display:flex; align-items:center; gap:6px; background:rgba(201,147,58,.15); border:1px solid rgba(201,147,58,.3); color:var(--gold); font-size:12px; font-weight:500; padding:7px 14px; border-radius:100px; }
+
+/* QUICK STATS */
+.stats-row { display:flex; border-bottom:1px solid var(--border); }
+.stat-box { flex:1; padding:22px 20px; border-right:1px solid var(--border); display:flex; flex-direction:column; gap:3px; }
+.stat-box:last-child { border-right:none; }
+.stat-icon { font-size:18px; margin-bottom:4px; }
+.stat-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.06em; color:var(--ink3); }
+.stat-value { font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:var(--ink); line-height:1.1; }
+.stat-sub { font-size:11px; color:var(--ink3); }
+
+/* CARD BODY */
+.card-body { padding: 48px; display:flex; gap:52px; }
+.card-main { flex:1; min-width:0; }
+.card-sidebar { width:270px; flex-shrink:0; }
+
+/* SECTION HEADING */
+.section-eyebrow { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.1em; color:var(--purple); margin-bottom:10px; }
+.section-title { font-family:'Fraunces',serif; font-size:23px; font-weight:600; color:var(--ink); letter-spacing:-.01em; margin-bottom:20px; line-height:1.25; }
+.section-sep { height:1px; background:var(--border); margin:40px 0; }
+
+/* WHO SHOULD */
+.audience-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:40px; }
+.audience-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); padding:18px 20px; transition: border-color .18s; }
+.audience-card:hover { border-color:rgba(90,79,214,.25); }
+.audience-icon { font-size:22px; margin-bottom:8px; }
+.audience-title { font-size:14px; font-weight:600; color:var(--ink); margin-bottom:4px; }
+.audience-desc { font-size:13px; color:var(--ink2); line-height:1.55; }
+
+/* MODULES */
+.modules-list { display:flex; flex-direction:column; gap:10px; margin-bottom:36px; }
+.module-row { border:1px solid var(--border); border-radius:var(--r-sm); overflow:hidden; background:var(--bg); transition: border-color .2s; }
+.module-row:hover { border-color:rgba(90,79,214,.25); }
+.module-header { display:flex; align-items:center; gap:14px; padding:15px 18px; cursor:pointer; user-select:none; }
+.module-num { width:30px; height:30px; border-radius:7px; background:var(--purple-lt); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--purple); flex-shrink:0; }
+.module-name { flex:1; }
+.module-name strong { font-size:13.5px; font-weight:600; color:var(--ink); display:block; margin-bottom:1px; }
+.module-name span { font-size:12px; color:var(--ink3); }
+.module-chevron { width:16px; height:16px; color:var(--ink3); transition:transform .25s; flex-shrink:0; }
+.module-row.open .module-chevron { transform:rotate(180deg); }
+.module-body { max-height:0; overflow:hidden; transition:max-height .38s cubic-bezier(.4,0,.2,1); }
+.module-row.open .module-body { max-height:700px; }
+.module-content { padding:0 18px 18px 62px; }
+.module-topic { font-size:12.5px; color:var(--ink2); line-height:1.7; padding:2px 0; display:flex; align-items:flex-start; gap:6px; }
+.module-topic::before { content:'·'; color:var(--purple); font-size:16px; line-height:1.4; flex-shrink:0; }
+.module-section-head { font-size:10.5px; font-weight:700; color:var(--ink3); text-transform:uppercase; letter-spacing:.07em; margin:10px 0 3px; }
+
+/* CTA BUTTON */
+.start-btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; padding:16px 24px; background:var(--purple); color:#fff; border:none; border-radius:var(--r-sm); font-family:'DM Sans',sans-serif; font-size:15px; font-weight:600; cursor:pointer; text-decoration:none; transition:background .2s, transform .15s; }
+.start-btn:hover { background:var(--purple-dk); transform:translateY(-1px); }
+.start-btn svg { width:16px; height:16px; }
+
+/* SIDEBAR */
+.sidebar-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); overflow:hidden; margin-bottom:14px; }
+.sidebar-card-head { padding:12px 16px; background:var(--purple-lt); display:flex; align-items:center; gap:7px; }
+.sidebar-card-head span { font-size:12px; font-weight:600; color:var(--purple-dk); }
+.sidebar-card-body { padding:14px 16px; display:flex; flex-direction:column; gap:9px; }
+.sidebar-row { display:flex; justify-content:space-between; align-items:center; font-size:12.5px; }
+.sidebar-row .key { color:var(--ink3); }
+.sidebar-row .val { color:var(--ink); font-weight:500; }
+.brochure-btn { display:flex; align-items:center; justify-content:center; gap:7px; width:100%; padding:11px 18px; margin-top:4px; background:transparent; color:var(--purple); border:1.5px solid var(--purple); border-radius:var(--r-sm); font-family:'DM Sans',sans-serif; font-size:13.5px; font-weight:500; cursor:pointer; transition:all .18s; }
+.brochure-btn:hover { background:var(--purple-lt); }
+.brochure-btn svg { width:14px; height:14px; }
+
+/* MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(28,26,40,.55); backdrop-filter:blur(4px); z-index:500; align-items:center; justify-content:center; padding:24px; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--surface); border-radius:20px; width:100%; max-width:500px; overflow:hidden; animation:slideUp .3s ease; }
+@keyframes slideUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+.modal-head { background:var(--ink); padding:26px 30px; position:relative; }
+.modal-head h3 { font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#fff; margin-bottom:3px; }
+.modal-head p { font-size:13px; color:rgba(255,255,255,.5); }
+.modal-close { position:absolute; top:18px; right:18px; width:30px; height:30px; background:rgba(255,255,255,.1); border:none; border-radius:50%; color:#fff; cursor:pointer; font-size:14px; display:flex; align-items:center; justify-content:center; }
+.modal-body { padding:26px 30px; display:flex; flex-direction:column; gap:12px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.form-group { display:flex; flex-direction:column; gap:4px; }
+.form-group.full { grid-column:1/-1; }
+.form-group label { font-size:11px; font-weight:600; color:var(--ink2); text-transform:uppercase; letter-spacing:.05em; }
+.form-group input, .form-group select { padding:9px 12px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--ink); background:var(--bg); outline:none; transition:border-color .2s; }
+.form-group input:focus, .form-group select:focus { border-color:var(--purple); }
+.form-group input::placeholder { color:var(--ink3); }
+.submit-btn { background:var(--purple); color:#fff; border:none; border-radius:var(--r-sm); padding:12px 22px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:background .18s; margin-top:2px; }
+.submit-btn:hover { background:var(--purple-dk); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <circle cx="9" cy="4" r="2" stroke="#fff" stroke-width="1.5"/>
+        <line x1="9" y1="6" x2="9" y2="9" stroke="#fff" stroke-width="1.5"/>
+        <line x1="3" y1="9" x2="15" y2="9" stroke="#fff" stroke-width="1.5"/>
+        <path d="M3 9L1 14H5Z" stroke="#fff" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+        <path d="M15 9L13 14H17Z" stroke="#fff" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    LexFin
+  </a>
+  <nav>
+    <a href="#">Home</a>
+    <a href="#" class="active">Courses</a>
+    <a href="#">Blogs</a>
+    <a href="#">Study Material</a>
+    <a href="#">Regulatory Alerts</a>
+  </nav>
+  <button class="header-cta">Log In</button>
+</header>
+
+<!-- PAGE HEAD -->
+<section class="page-head">
+  <div class="eyebrow">E-Learning</div>
+  <h1>Our <em>Courses</em></h1>
+  <p class="page-desc">Master Indian Financial & Legal frameworks through structured, bite-sized learning.</p>
+</section>
+
+<!-- AFFIL STRIP -->
+<div class="affil-strip">
+  <div class="affil-logo">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#fff" stroke-width="1.5"/><path d="M5 9h8M9 5v8" stroke="#fff" stroke-width="1.5"/></svg>
+  </div>
+  <p class="affil-text">All courses affiliated with <strong>SGT University, Faculty of Law</strong> — Joint certification with LexFin</p>
+</div>
+
+<!-- COURSE CARD -->
+<div class="course-wrap">
+  <div class="course-card">
+
+    <!-- BAND -->
+    <div class="card-band">
+      <div class="band-left">
+        <div class="new-badge">★ Featured Course</div>
+        <h2 class="course-title">Integrated Financial &amp;<br>Legal Literacy</h2>
+        <p class="course-subtitle">From household economics to capital markets — a complete legal-financial curriculum built for modern India.</p>
+      </div>
+      <div class="band-right">
+        <div class="cert-pill">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+          Joint Certificate
+        </div>
+        <div class="affil-pill">🏛️ SGT University × LexFin</div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">Duration</div>
+        <div class="stat-value">6 Weeks</div>
+        <div class="stat-sub">Self-paced</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⏱️</div>
+        <div class="stat-label">Learning Hours</div>
+        <div class="stat-value">30 hrs</div>
+        <div class="stat-sub">+ 5 Live Masterclasses</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">📚</div>
+        <div class="stat-label">Content</div>
+        <div class="stat-value">12 Modules</div>
+        <div class="stat-sub">+ Case Study Worksheets</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🔑</div>
+        <div class="stat-label">Access</div>
+        <div class="stat-value">Lifetime</div>
+        <div class="stat-sub">Dashboard & Updates</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-label">Certificate</div>
+        <div class="stat-value">Joint</div>
+        <div class="stat-sub">SGT × LexFin</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">🌐</div>
+        <div class="stat-label">Language</div>
+        <div class="stat-value">Bilingual</div>
+        <div class="stat-sub">English & Hindi</div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div class="card-body">
+      <div class="card-main">
+
+        <!-- WHO SHOULD TAKE -->
+        <div class="section-eyebrow">Audience</div>
+        <div class="section-title">Who should take this course?</div>
+        <div class="audience-grid">
+          <div class="audience-card">
+            <div class="audience-icon">⚖️</div>
+            <div class="audience-title">Law Students</div>
+            <div class="audience-desc">Understand the financial regulations you'll eventually litigate — before you enter the courtroom.</div>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">💼</div>
+            <div class="audience-title">Young Professionals</div>
+            <div class="audience-desc">Manage your first salary, understand taxes, and sidestep common debt traps from day one.</div>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">🚀</div>
+            <div class="audience-title">Entrepreneurs</div>
+            <div class="audience-desc">Grasp the transition from compliance to competitiveness — legal fluency is your biggest edge.</div>
+          </div>
+          <div class="audience-card">
+            <div class="audience-icon">🔬</div>
+            <div class="audience-title">Researchers</div>
+            <div class="audience-desc">Explore the rich intersection of Law (Lex) and Finance (Fin) through case studies and live data.</div>
+          </div>
+        </div>
+
+        <div class="section-sep"></div>
+
+        <!-- MODULES -->
+        <div class="section-eyebrow">Curriculum</div>
+        <div class="section-title">What's in it for you?<br>
+          <small style="font-family:'DM Sans',sans-serif;font-size:13px;font-weight:400;color:var(--ink2);letter-spacing:0;">6 actionable modules — basic awareness to professional mastery</small>
+        </div>
+
+        <div class="modules-list">
+
+          <div class="module-row" id="m1">
+            <div class="module-header" onclick="toggleModule('m1')">
+              <div class="module-num">01</div>
+              <div class="module-name"><strong>The Foundation</strong><span>Household Economics & Legal Awareness</span></div>
+              <svg class="module-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="module-body"><div class="module-content">
+              <div class="module-section-head">Advanced Economic Understanding</div>
+              <div class="module-topic">Types of income: earned, portfolio, and passive income</div>
+              <div class="module-topic">Real vs nominal income — legal implications in taxation and wage structures</div>
+              <div class="module-topic">Inflation indexing in taxation and government securities</div>
+              <div class="module-section-head">Legal Deepening</div>
+              <div class="module-topic">Heads of income under the Income Tax Act, 1961</div>
+              <div class="module-topic">Residential status and its impact on global income taxation</div>
+              <div class="module-topic">Legal compliance for first-time taxpayers (PAN linking, AIS/TIS review)</div>
+              <div class="module-section-head">Financial Inclusion & Law</div>
+              <div class="module-topic">Banking access under PMJDY (Jan Dhan Yojana)</div>
+              <div class="module-topic">KYC/AML norms under Reserve Bank of India</div>
+              <div class="module-topic">Legal safeguards for small depositors and zero-balance accounts</div>
+              <div class="module-section-head">Practical Component</div>
+              <div class="module-topic">Case study: Misclassification of income leading to tax penalties</div>
+              <div class="module-topic">Activity: Identify taxable vs exempt income scenarios</div>
+            </div></div>
+          </div>
+
+          <div class="module-row" id="m2">
+            <div class="module-header" onclick="toggleModule('m2')">
+              <div class="module-num">02</div>
+              <div class="module-name"><strong>Managing Your Finances</strong><span>Personal Finance & Compliance Skills</span></div>
+              <svg class="module-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="module-body"><div class="module-content">
+              <div class="module-section-head">Advanced Budgeting & Cash Flow</div>
+              <div class="module-topic">Cash flow statements for individuals</div>
+              <div class="module-topic">Behavioral finance biases affecting spending</div>
+              <div class="module-topic">Digital financial tools and UPI ecosystem compliance</div>
+              <div class="module-section-head">Debt & Legal Obligations</div>
+              <div class="module-topic">Loan documentation: sanction letters, amortization schedules</div>
+              <div class="module-topic">Legal consequences of default (SARFAESI Act overview)</div>
+              <div class="module-topic">Credit score (CIBIL) and legal implications of poor credit history</div>
+              <div class="module-section-head">Regulatory Compliance</div>
+              <div class="module-topic">RBI guidelines on digital lending and recovery agents</div>
+              <div class="module-topic">Fair Practices Code and grievance redressal</div>
+              <div class="module-section-head">Practical Component</div>
+              <div class="module-topic">Draft a personal monthly budget with legal compliance checks</div>
+              <div class="module-topic">Analyze a sample loan agreement</div>
+            </div></div>
+          </div>
+
+          <div class="module-row" id="m3">
+            <div class="module-header" onclick="toggleModule('m3')">
+              <div class="module-num">03</div>
+              <div class="module-name"><strong>Financial Planning</strong><span>Goal Setting & Tax Efficiency</span></div>
+              <svg class="module-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="module-body"><div class="module-content">
+              <div class="module-section-head">Advanced Planning Tools</div>
+              <div class="module-topic">Life-cycle financial planning: education, marriage, retirement</div>
+              <div class="module-topic">Inflation-adjusted goal setting and asset allocation strategies</div>
+              <div class="module-section-head">Tax Planning (In-depth)</div>
+              <div class="module-topic">Deductions: 80C, 80D, 80CCD (NPS), HRA, LTA</div>
+              <div class="module-topic">Capital gains planning and tax harvesting</div>
+              <div class="module-topic">Advance tax and TDS compliance</div>
+              <div class="module-section-head">Wealth Transfer & Estate Planning</div>
+              <div class="module-topic">Drafting of Wills and Codicils</div>
+              <div class="module-topic">Nomination vs legal heir — a critical distinction</div>
+              <div class="module-topic">Trusts and their legal structure</div>
+              <div class="module-section-head">Practical Component</div>
+              <div class="module-topic">Create a goal-based financial plan</div>
+              <div class="module-topic">Draft a basic will format</div>
+            </div></div>
+          </div>
+
+          <div class="module-row" id="m4">
+            <div class="module-header" onclick="toggleModule('m4')">
+              <div class="module-num">04</div>
+              <div class="module-name"><strong>Risk & Reward</strong><span>Insurance, Liability & Legal Safeguards</span></div>
+              <svg class="module-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="module-body"><div class="module-content">
+              <div class="module-section-head">Advanced Insurance Literacy</div>
+              <div class="module-topic">ULIPs vs Term Insurance — legal and financial comparison</div>
+              <div class="module-topic">Health insurance clauses: co-pay, waiting period, exclusions</div>
+              <div class="module-topic">Motor insurance and third-party liability laws</div>
+              <div class="module-section-head">Regulatory & Legal Framework</div>
+              <div class="module-topic">Role and powers of IRDAI; Insurance Act, 1938 overview</div>
+              <div class="module-topic">IRDAI grievance redressal system</div>
+              <div class="module-section-head">Practical Component</div>
+              <div class="module-topic">Compare two insurance policies legally and financially</div>
+              <div class="module-topic">Simulate an insurance claim filing</div>
+            </div></div>
+          </div>
+
+          <div class="module-row" id="m5">
+            <div class="module-header" onclick="toggleModule('m5')">
+              <div class="module-num">05</div>
+              <div class="module-name"><strong>The Financial Landscape</strong><span>Markets, Regulation & Legal Rights</span></div>
+              <svg class="module-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="module-body"><div class="module-content">
+              <div class="module-section-head">Advanced Market Understanding</div>
+              <div class="module-topic">Primary vs secondary markets; IPO process and legal disclosures</div>
+              <div class="module-topic">Mutual fund regulations and NAV calculation</div>
+              <div class="module-section-head">Regulatory Deep Dive</div>
+              <div class="module-topic">Functions and powers of RBI, SEBI, and IRDAI</div>
+              <div class="module-topic">SEBI regulations on insider trading and market manipulation</div>
+              <div class="module-section-head">Cyber Law & Digital Finance</div>
+              <div class="module-topic">Legal framework under Information Technology Act, 2000</div>
+              <div class="module-topic">RBI guidelines on digital payments, UPI, wallets</div>
+              <div class="module-section-head">Fraud & Financial Crimes</div>
+              <div class="module-topic">Ponzi schemes, pyramid schemes, chit fund scams</div>
+              <div class="module-topic">Legal remedies: FIR, cyber cell, consumer courts, SEBI SCORES</div>
+              <div class="module-section-head">Practical Component</div>
+              <div class="module-topic">Analyze a real-world scam case</div>
+              <div class="module-topic">File a mock investor complaint via SEBI SCORES</div>
+            </div></div>
+          </div>
+
+          <div class="module-row" id="m6">
+            <div class="module-header" onclick="toggleModule('m6')">
+              <div class="module-num">06</div>
+              <div class="module-name"><strong>Capstone Project</strong><span>The LexFin Strategy — Legal-Financial Integration</span></div>
+              <svg class="module-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </div>
+            <div class="module-body"><div class="module-content">
+              <div class="module-section-head">Comprehensive Application</div>
+              <div class="module-topic">Develop a holistic Legal-Financial Blueprint: income & tax strategy, budgeting, investment allocation, insurance, estate planning</div>
+              <div class="module-section-head">Compliance Audit</div>
+              <div class="module-topic">Personal checklist: ITR filing, GST basics, loan compliance, insurance, nomination & will</div>
+              <div class="module-section-head">Evaluation & Certification</div>
+              <div class="module-topic">Viva + project presentation; real-life scenario-based assessment</div>
+              <div class="module-topic">Case law integration: landmark judgments on banking fraud, insurance disputes, tax evasion</div>
+            </div></div>
+          </div>
+
+        </div>
+
+        <div class="section-sep"></div>
+
+        <!-- LEARNING PATH ENTRY -->
+        <div class="section-eyebrow">Your Journey</div>
+        <div class="section-title" style="margin-bottom:14px;">Ready to begin?</div>
+        <p style="font-size:14px;color:var(--ink2);line-height:1.6;margin-bottom:24px;">Complete each module to unlock the next. Master Indian Financial Laws step by step — at your own pace, with lifetime access.</p>
+        <a href="learning-path.html" class="start-btn">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          View Learning Path &amp; Start Course
+        </a>
+
+      </div><!-- /card-main -->
+
+      <!-- SIDEBAR -->
+      <div class="card-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span>Course Details</span>
+          </div>
+          <div class="sidebar-card-body">
+            <div class="sidebar-row"><span class="key">Duration</span><span class="val">6 Weeks</span></div>
+            <div class="sidebar-row"><span class="key">Learning Hours</span><span class="val">30 hrs</span></div>
+            <div class="sidebar-row"><span class="key">Live Sessions</span><span class="val">5 Masterclasses</span></div>
+            <div class="sidebar-row"><span class="key">Modules</span><span class="val">12 Interactive</span></div>
+            <div class="sidebar-row"><span class="key">Access</span><span class="val">Lifetime</span></div>
+            <div class="sidebar-row"><span class="key">Language</span><span class="val">EN + HI</span></div>
+            <div class="sidebar-row"><span class="key">Certificate</span><span class="val">SGT × LexFin</span></div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <div class="sidebar-card-head">
+            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            <span>Affiliated By</span>
+          </div>
+          <div class="sidebar-card-body">
+            <div style="font-size:13px;color:var(--ink);font-weight:500;line-height:1.5;">SGT University<br><span style="font-weight:400;color:var(--ink2);">Faculty of Law</span></div>
+            <div style="font-size:11.5px;color:var(--ink3);margin-top:3px;">Joint Certificate issued on completion</div>
+          </div>
+        </div>
+
+        <button class="brochure-btn" onclick="openModal()">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 10v6M9 13l3 3 3-3"/><path d="M20 17v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+          Download Brochure
+        </button>
+
+        <a href="learning-path.html" class="start-btn" style="margin-top:12px; display:flex;">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          Start Learning
+        </a>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /course-card -->
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Get Full Course Syllabus</h3>
+      <p>We'll send the complete brochure to your email.</p>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group"><label>Name</label><input type="text" placeholder="Your full name"></div>
+        <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Contact Number</label><input type="tel" placeholder="+91 XXXXX XXXXX"></div>
+        <div class="form-group"><label>State</label>
+          <select><option value="">Select state</option><option>Delhi</option><option>Haryana</option><option>Maharashtra</option><option>Uttar Pradesh</option><option>Karnataka</option><option>Tamil Nadu</option><option>West Bengal</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>City</label><input type="text" placeholder="Your city"></div>
+        <div class="form-group"><label>Current Program</label>
+          <select><option value="">e.g. BA LLB</option><option>BA LLB</option><option>BBA</option><option>B.Com</option><option>MBA</option><option>Professional</option><option>Other</option></select>
+        </div>
+      </div>
+      <div class="form-group full"><label>Specialization</label>
+        <select><option value="">e.g. Corporate Law</option><option>Corporate Law</option><option>Finance</option><option>Research</option><option>Taxation</option><option>Other</option></select>
+      </div>
+      <button class="submit-btn" onclick="submitBrochure()">Send Me the Brochure →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleModule(id) { document.getElementById(id).classList.toggle('open'); }
+function openModal() { document.getElementById('modal').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.body.style.overflow=''; }
+function closeModalOutside(e) { if(e.target===document.getElementById('modal')) closeModal(); }
+function submitBrochure() { alert('Thank you! The brochure has been sent to your email.'); closeModal(); }
+</script>
+</body>
+</html>

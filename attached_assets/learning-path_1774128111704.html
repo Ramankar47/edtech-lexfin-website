@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexFin — Your Learning Path</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #F0EDE6; --surface: #FAFAF7; --ink: #1C1A28; --ink2: #5A576B; --ink3: #9A97A8;
+  --purple: #5A4FD6; --purple-lt: #EAE8FB; --purple-dk: #3D34A5;
+  --gold: #C9933A; --gold-lt: #FBF3E3;
+  --teal: #2A8C72; --teal-lt: #E2F3EE;
+  --locked: #C8C5D8; --locked-bg: #ECEAF4;
+  --border: #E0DCCE; --r: 14px; --r-sm: 8px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+/* HEADER */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(240,237,230,0.88); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px; display: flex; align-items: center; justify-content: space-between; height: 64px;
+}
+.logo { display: flex; align-items: center; gap: 9px; font-weight: 600; font-size: 18px; color: var(--ink); text-decoration: none; }
+.logo-icon { width: 32px; height: 32px; background: var(--purple); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+nav { display: flex; align-items: center; gap: 4px; }
+nav a { font-size: 14px; color: var(--ink2); text-decoration: none; padding: 7px 14px; border-radius: 6px; transition: all .18s; }
+nav a:hover { color: var(--ink); background: rgba(90,79,214,.07); }
+nav a.active { color: var(--purple); font-weight: 500; background: var(--purple-lt); }
+.back-link { display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink3); text-decoration:none; padding:7px 14px; border-radius:6px; transition:all .18s; }
+.back-link:hover { color:var(--purple); background:var(--purple-lt); }
+.back-link svg { width:14px; height:14px; }
+.header-cta { background: var(--ink); color: #fff; border: none; padding: 9px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .18s; }
+.header-cta:hover { background: var(--purple); }
+
+/* PAGE HERO */
+.page-hero { text-align:center; padding: 60px 48px 48px; }
+.page-hero h1 { font-family:'Fraunces',serif; font-size:clamp(30px,4vw,44px); font-weight:700; letter-spacing:-.02em; color:var(--ink); margin-bottom:12px; }
+.page-hero h1 em { font-style:italic; font-weight:300; color:var(--purple); }
+.page-hero p { font-size:15px; color:var(--ink2); line-height:1.65; max-width:420px; margin:0 auto 24px; }
+.progress-wrap { display:inline-flex; align-items:center; gap:10px; background:var(--surface); border:1px solid var(--border); border-radius:100px; padding:8px 20px; }
+.progress-bar { width:160px; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; width:16.6%; background:var(--purple); border-radius:3px; transition:width .5s ease; }
+.progress-label { font-size:12px; color:var(--ink2); font-weight:500; }
+
+/* COURSE LABEL STRIP */
+.course-strip {
+  max-width:680px; margin:0 auto 0; padding:0 24px;
+}
+.course-banner {
+  background:var(--purple); border-radius:12px;
+  padding:14px 22px; display:flex; align-items:center; gap:12px;
+  position:relative; z-index:2;
+}
+.course-banner svg { width:18px; height:18px; color:#fff; flex-shrink:0; }
+.course-banner-text { flex:1; }
+.course-banner-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,.65); margin-bottom:2px; }
+.course-banner-name { font-size:15px; font-weight:600; color:#fff; }
+.course-banner-meta { font-size:11px; color:rgba(255,255,255,.5); }
+
+/* PATH CONTAINER */
+.path-container {
+  max-width:680px; margin:0 auto;
+  padding:0 24px 80px;
+  position:relative;
+}
+
+/* VERTICAL CONNECTOR */
+.connector {
+  width:2px; height:48px;
+  margin:0 auto;
+  position:relative; z-index:1;
+}
+.connector.solid { background:var(--purple); }
+.connector.dashed {
+  background:transparent;
+  background-image: repeating-linear-gradient(to bottom, var(--locked) 0, var(--locked) 6px, transparent 6px, transparent 12px);
+}
+.connector.dots {
+  background:transparent;
+  background-image: repeating-linear-gradient(to bottom, var(--purple) 0, var(--purple) 4px, transparent 4px, transparent 10px);
+}
+
+/* START PILL */
+.start-pill {
+  display:flex; justify-content:center; margin-bottom:0;
+}
+.start-pill span {
+  background:var(--purple); color:#fff;
+  font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+  padding:6px 20px; border-radius:100px;
+  position:relative; z-index:2;
+}
+
+/* MODULE NODE */
+.module-node {
+  display:flex; flex-direction:column; align-items:center;
+  position:relative; z-index:2;
+}
+
+.node-circle {
+  width:80px; height:80px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px;
+  border:3px solid transparent;
+  transition:transform .2s, box-shadow .2s;
+  cursor:pointer;
+  position:relative;
+}
+
+.node-circle.unlocked {
+  background:var(--purple);
+  border-color:var(--purple-dk);
+  box-shadow:0 4px 20px rgba(90,79,214,.35);
+}
+.node-circle.unlocked:hover {
+  transform:scale(1.06);
+  box-shadow:0 8px 28px rgba(90,79,214,.45);
+}
+.node-circle.active-module {
+  background:var(--purple);
+  border-color:var(--purple-dk);
+  box-shadow:0 4px 24px rgba(90,79,214,.4);
+  animation:pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow:0 4px 24px rgba(90,79,214,.4), 0 0 0 0 rgba(90,79,214,.25); }
+  50%      { box-shadow:0 4px 24px rgba(90,79,214,.4), 0 0 0 12px rgba(90,79,214,0); }
+}
+.node-circle.locked {
+  background:var(--locked-bg);
+  border-color:var(--locked);
+  cursor:not-allowed;
+}
+.node-circle.locked .node-emoji { display:none; }
+.lock-icon { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; }
+.lock-icon svg { width:28px; height:28px; color:var(--locked); }
+.node-circle.unlocked .lock-icon,
+.node-circle.active-module .lock-icon { display:none; }
+
+.node-label {
+  text-align:center; margin-top:10px; margin-bottom:0;
+}
+.node-unit { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.08em; margin-bottom:3px; }
+.node-circle.unlocked ~ .node-label .node-unit,
+.node-circle.active-module ~ .node-label .node-unit { color:var(--purple); }
+.node-circle.locked ~ .node-label .node-unit { color:var(--locked); }
+
+.node-name { font-family:'Fraunces',serif; font-size:17px; font-weight:600; line-height:1.2; }
+.node-circle.unlocked ~ .node-label .node-name,
+.node-circle.active-module ~ .node-label .node-name { color:var(--ink); }
+.node-circle.locked ~ .node-label .node-name { color:var(--locked); }
+
+.node-sub { font-size:12px; margin-top:2px; }
+.node-circle.unlocked ~ .node-label .node-sub,
+.node-circle.active-module ~ .node-label .node-sub { color:var(--ink3); }
+.node-circle.locked ~ .node-label .node-sub { color:var(--locked); }
+
+/* EXPANDED CONTENT PANEL */
+.module-panel {
+  width:100%; background:var(--surface);
+  border:1px solid var(--border); border-radius:var(--r);
+  overflow:hidden; margin-top:16px;
+  max-height:0; transition:max-height .4s cubic-bezier(.4,0,.2,1), opacity .3s;
+  opacity:0;
+}
+.module-panel.open { max-height:800px; opacity:1; }
+
+.panel-head { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.panel-head-left { display:flex; align-items:center; gap:10px; }
+.panel-num { width:28px; height:28px; border-radius:7px; background:var(--purple-lt); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--purple); }
+.panel-title { font-size:14px; font-weight:600; color:var(--ink); }
+.panel-sub { font-size:12px; color:var(--ink3); }
+.panel-start-btn { padding:8px 18px; background:var(--purple); color:#fff; border:none; border-radius:var(--r-sm); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; cursor:pointer; transition:background .18s; white-space:nowrap; }
+.panel-start-btn:hover { background:var(--purple-dk); }
+
+.panel-body { padding:16px 22px; }
+.topic-section { margin-bottom:14px; }
+.topic-section:last-child { margin-bottom:0; }
+.topic-head { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--ink3); margin-bottom:6px; }
+.topic-item { display:flex; align-items:flex-start; gap:8px; font-size:13px; color:var(--ink2); line-height:1.6; padding:3px 0; }
+.topic-dot { width:5px; height:5px; border-radius:50%; background:var(--purple); margin-top:7px; flex-shrink:0; }
+
+.panel-footer { padding:14px 22px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.panel-meta { display:flex; gap:16px; }
+.panel-meta-item { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--ink3); }
+.panel-meta-item svg { width:13px; height:13px; }
+
+/* LOCKED PANEL */
+.locked-panel {
+  width:100%; background:var(--locked-bg);
+  border:1px dashed var(--locked); border-radius:var(--r);
+  padding:18px 22px; margin-top:16px;
+  display:flex; align-items:center; gap:12px;
+}
+.locked-panel svg { width:18px; height:18px; color:var(--locked); flex-shrink:0; }
+.locked-panel p { font-size:13px; color:var(--locked); }
+
+/* COMPLETION BADGE */
+.completion-node {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  margin-top:0;
+}
+.completion-circle {
+  width:72px; height:72px; border-radius:50%;
+  background:var(--teal-lt); border:2.5px solid var(--teal);
+  display:flex; align-items:center; justify-content:center; font-size:28px;
+  opacity:.45;
+}
+.completion-text { text-align:center; }
+.completion-text strong { font-size:14px; color:var(--locked); display:block; }
+.completion-text span { font-size:12px; color:var(--locked); }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <circle cx="9" cy="4" r="2" stroke="#fff" stroke-width="1.5"/>
+        <line x1="9" y1="6" x2="9" y2="9" stroke="#fff" stroke-width="1.5"/>
+        <line x1="3" y1="9" x2="15" y2="9" stroke="#fff" stroke-width="1.5"/>
+        <path d="M3 9L1 14H5Z" stroke="#fff" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+        <path d="M15 9L13 14H17Z" stroke="#fff" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    LexFin
+  </a>
+  <nav>
+    <a href="lexfin-courses.html" class="back-link">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Back to Course
+    </a>
+    <a href="#" class="active">Learning Path</a>
+  </nav>
+  <button class="header-cta">Log In</button>
+</header>
+
+<!-- HERO -->
+<section class="page-hero">
+  <h1>Your <em>Learning Path</em></h1>
+  <p>Complete each module to unlock the next. Master Indian Financial Laws step by step.</p>
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <span class="progress-label" id="progressLabel">1 of 6 modules</span>
+  </div>
+</section>
+
+<!-- PATH -->
+<div class="path-container">
+
+  <!-- COURSE BANNER -->
+  <div class="course-strip">
+    <div class="course-banner">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <div class="course-banner-text">
+        <div class="course-banner-label">Course</div>
+        <div class="course-banner-name">Integrated Financial & Legal Literacy</div>
+      </div>
+      <div class="course-banner-meta">6 Modules · 30 hrs</div>
+    </div>
+  </div>
+
+  <!-- START PILL -->
+  <div class="connector solid"></div>
+  <div class="start-pill"><span>START!</span></div>
+  <div class="connector dots"></div>
+
+  <!-- ── MODULE 1 (ACTIVE / UNLOCKED) ── -->
+  <div class="module-node" id="node1">
+    <div class="node-circle active-module" onclick="togglePanel(1)">
+      <span class="node-emoji">🏠</span>
+      <div class="lock-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    </div>
+    <div class="node-label">
+      <div class="node-unit">Module 1</div>
+      <div class="node-name">The Foundation</div>
+      <div class="node-sub">Household Economics & Legal Awareness</div>
+    </div>
+    <div class="module-panel open" id="panel1">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <div class="panel-num">01</div>
+          <div>
+            <div class="panel-title">The Foundation</div>
+            <div class="panel-sub">Household Economics & Legal Awareness</div>
+          </div>
+        </div>
+        <button class="panel-start-btn">Start Module →</button>
+      </div>
+      <div class="panel-body">
+        <div class="topic-section">
+          <div class="topic-head">Advanced Economic Understanding</div>
+          <div class="topic-item"><div class="topic-dot"></div>Types of income: earned, portfolio, and passive income</div>
+          <div class="topic-item"><div class="topic-dot"></div>Real vs nominal income — legal implications in taxation</div>
+          <div class="topic-item"><div class="topic-dot"></div>Inflation indexing in taxation and government securities</div>
+        </div>
+        <div class="topic-section">
+          <div class="topic-head">Legal Deepening</div>
+          <div class="topic-item"><div class="topic-dot"></div>Heads of income under the Income Tax Act, 1961</div>
+          <div class="topic-item"><div class="topic-dot"></div>Residential status and global income taxation</div>
+          <div class="topic-item"><div class="topic-dot"></div>Legal compliance for first-time taxpayers (PAN, AIS/TIS)</div>
+        </div>
+        <div class="topic-section">
+          <div class="topic-head">Financial Inclusion & Law</div>
+          <div class="topic-item"><div class="topic-dot"></div>Banking access under PMJDY; KYC/AML norms under RBI</div>
+          <div class="topic-item"><div class="topic-dot"></div>Legal safeguards for small depositors and zero-balance accounts</div>
+        </div>
+        <div class="topic-section">
+          <div class="topic-head">Practical Component</div>
+          <div class="topic-item"><div class="topic-dot"></div>Case study: Misclassification of income leading to tax penalties</div>
+          <div class="topic-item"><div class="topic-dot"></div>Activity: Identify taxable vs exempt income scenarios</div>
+        </div>
+      </div>
+      <div class="panel-footer">
+        <div class="panel-meta">
+          <div class="panel-meta-item"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>~5 hrs</div>
+          <div class="panel-meta-item"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>4 sections</div>
+          <div class="panel-meta-item"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>1 case study</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector dashed"></div>
+
+  <!-- ── MODULE 2 (LOCKED) ── -->
+  <div class="module-node" id="node2">
+    <div class="node-circle locked" onclick="showLockMsg(2)">
+      <span class="node-emoji">💰</span>
+      <div class="lock-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    </div>
+    <div class="node-label">
+      <div class="node-unit">Module 2</div>
+      <div class="node-name">Managing Your Finances</div>
+      <div class="node-sub">Personal Finance & Compliance Skills</div>
+    </div>
+    <div class="locked-panel" id="lockpanel2" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <p>Complete <strong>Module 1</strong> to unlock this module.</p>
+    </div>
+  </div>
+
+  <div class="connector dashed"></div>
+
+  <!-- ── MODULE 3 (LOCKED) ── -->
+  <div class="module-node" id="node3">
+    <div class="node-circle locked" onclick="showLockMsg(3)">
+      <span class="node-emoji">🎯</span>
+      <div class="lock-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    </div>
+    <div class="node-label">
+      <div class="node-unit">Module 3</div>
+      <div class="node-name">Financial Planning</div>
+      <div class="node-sub">Goal Setting & Tax Efficiency</div>
+    </div>
+    <div class="locked-panel" id="lockpanel3" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <p>Complete <strong>Module 2</strong> to unlock this module.</p>
+    </div>
+  </div>
+
+  <div class="connector dashed"></div>
+
+  <!-- ── MODULE 4 (LOCKED) ── -->
+  <div class="module-node" id="node4">
+    <div class="node-circle locked" onclick="showLockMsg(4)">
+      <span class="node-emoji">🛡️</span>
+      <div class="lock-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    </div>
+    <div class="node-label">
+      <div class="node-unit">Module 4</div>
+      <div class="node-name">Risk & Reward</div>
+      <div class="node-sub">Insurance, Liability & Legal Safeguards</div>
+    </div>
+    <div class="locked-panel" id="lockpanel4" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <p>Complete <strong>Module 3</strong> to unlock this module.</p>
+    </div>
+  </div>
+
+  <div class="connector dashed"></div>
+
+  <!-- ── MODULE 5 (LOCKED) ── -->
+  <div class="module-node" id="node5">
+    <div class="node-circle locked" onclick="showLockMsg(5)">
+      <span class="node-emoji">📈</span>
+      <div class="lock-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    </div>
+    <div class="node-label">
+      <div class="node-unit">Module 5</div>
+      <div class="node-name">The Financial Landscape</div>
+      <div class="node-sub">Markets, Regulation & Legal Rights</div>
+    </div>
+    <div class="locked-panel" id="lockpanel5" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <p>Complete <strong>Module 4</strong> to unlock this module.</p>
+    </div>
+  </div>
+
+  <div class="connector dashed"></div>
+
+  <!-- ── MODULE 6 (LOCKED) ── -->
+  <div class="module-node" id="node6">
+    <div class="node-circle locked" onclick="showLockMsg(6)">
+      <span class="node-emoji">🏆</span>
+      <div class="lock-icon"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    </div>
+    <div class="node-label">
+      <div class="node-unit">Module 6</div>
+      <div class="node-name">Capstone Project</div>
+      <div class="node-sub">The LexFin Strategy</div>
+    </div>
+    <div class="locked-panel" id="lockpanel6" style="display:none;">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <p>Complete <strong>all previous modules</strong> to access the Capstone Project.</p>
+    </div>
+  </div>
+
+  <div class="connector dashed"></div>
+
+  <!-- CERTIFICATE NODE -->
+  <div class="completion-node">
+    <div class="completion-circle">🎓</div>
+    <div class="completion-text">
+      <strong>Joint Certificate</strong>
+      <span>SGT University × LexFin</span>
+    </div>
+  </div>
+
+</div><!-- /path-container -->
+
+<script>
+function togglePanel(n) {
+  const panel = document.getElementById('panel' + n);
+  if (panel) panel.classList.toggle('open');
+}
+function showLockMsg(n) {
+  const lp = document.getElementById('lockpanel' + n);
+  if (!lp) return;
+  const showing = lp.style.display !== 'none';
+  // hide all lock panels first
+  [2,3,4,5,6].forEach(i => {
+    const el = document.getElementById('lockpanel' + i);
+    if (el) el.style.display = 'none';
+  });
+  if (!showing) lp.style.display = 'flex';
+}
+</script>
+</body>
+</html>
