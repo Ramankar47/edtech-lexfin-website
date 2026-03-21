@@ -70,7 +70,7 @@ export function GlobalHeader() {
         LexFin
       </button>
 
-      <nav style={{ display: "flex", alignItems: "center", gap: 4 }}>
+      <nav className="lexfin-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>
         {NAV_LINKS.map(link => {
           const isActive = location === link.href || (link.href !== "/" && location.startsWith(link.href));
           return (
@@ -88,6 +88,7 @@ export function GlobalHeader() {
                 borderRadius: 6,
                 transition: "all .18s",
                 fontFamily: "'DM Sans', sans-serif",
+                whiteSpace: "nowrap",
               }}
             >
               {link.label}
@@ -95,6 +96,11 @@ export function GlobalHeader() {
           );
         })}
       </nav>
+      <style>{`
+        @media (max-width: 640px) {
+          .lexfin-nav { display: none !important; }
+        }
+      `}</style>
 
       <button
         style={{
