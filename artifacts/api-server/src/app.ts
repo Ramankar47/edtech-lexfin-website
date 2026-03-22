@@ -55,12 +55,12 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-// Serve blog photos: content/blogs/photo/{category}/{id}.png|jpg
-app.use("/blog-photos", express.static(path.resolve(process.cwd(), "../../content/blogs/photo"), {
+app.use("/api", router);
+
+// Serve blog photos under /api/blog-photos so it shares the same proxy routing as API calls
+app.use("/api/blog-photos", express.static(path.resolve(process.cwd(), "../../content/blogs/photo"), {
   maxAge: "1d",
   fallthrough: true,
 }));
-
-app.use("/api", router);
 
 export default app;

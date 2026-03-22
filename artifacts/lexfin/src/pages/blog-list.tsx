@@ -284,7 +284,7 @@ export default function BlogListPage() {
         {!loading && !error && entries.length > 0 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             {entries.map((entry, i) => (
-              <BlogCard key={entry.id} entry={entry} index={i} />
+              <BlogCard key={entry.id} entry={{ ...entry, photoUrl: entry.photoUrl ? `${API_BASE}${entry.photoUrl}` : null }} index={i} />
             ))}
           </div>
         )}

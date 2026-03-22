@@ -22,7 +22,7 @@ function resolvePhotoUrl(category: string, id: number): string | null {
   const dir = path.join(PHOTO_DIR, category);
   for (const ext of IMAGE_EXTENSIONS) {
     if (fs.existsSync(path.join(dir, `${id}.${ext}`))) {
-      return `/blog-photos/${category}/${id}.${ext}`;
+      return `/api/blog-photos/${category}/${id}.${ext}`;
     }
   }
   return null;
