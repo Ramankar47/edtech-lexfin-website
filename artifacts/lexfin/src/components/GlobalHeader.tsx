@@ -12,7 +12,7 @@ const LOGO_SVG = (
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
-  { label: "Courses", href: "/courses" },
+  { label: "E-Learning", href: "/courses" },
   { label: "Blogs", href: "/blogs" },
   { label: "Study Material", href: "/study-material" },
   { label: "Regulatory Alerts", href: "/regulatory-alerts" },
