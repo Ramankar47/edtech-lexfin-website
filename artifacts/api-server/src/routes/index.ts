@@ -9,6 +9,7 @@ import puzzlesRouter from "./puzzles";
 import activityRouter from "./activity";
 import badgesRouter from "./badges";
 import contentRouter from "./content";
+import blogsRouter from "./blogs";
 
 const router: IRouter = Router();
 
@@ -22,5 +23,6 @@ router.use("/puzzles", puzzlesRouter);
 router.use("/activity", activityRouter);
 router.use("/badges", badgesRouter);
 router.use("/content", contentRouter);
+router.use("/blogs", blogsRouter);
 
 export default router;

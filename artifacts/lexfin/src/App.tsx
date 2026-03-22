@@ -7,6 +7,7 @@ import Dashboard from "@/pages/dashboard";
 import CoursesPage from "@/pages/courses";
 import LearningPathPage from "@/pages/learning-path";
 import BlogsPage from "@/pages/blogs";
+import BlogListPage from "@/pages/blog-list";
 import StudyMaterialPage from "@/pages/study-material";
 import RegulatoryAlertsPage from "@/pages/regulatory-alerts";
 import UnitLearnPage from "@/pages/unit-learn";
@@ -28,6 +29,7 @@ function Router() {
       <Route path="/courses" component={CoursesPage} />
       <Route path="/learning-path" component={LearningPathPage} />
       <Route path="/blogs" component={BlogsPage} />
+      <Route path="/blogs/:category" component={BlogListPage} />
       <Route path="/study-material" component={StudyMaterialPage} />
       <Route path="/regulatory-alerts" component={RegulatoryAlertsPage} />
       <Route path="/module/:moduleId/learn" component={UnitLearnPage} />
