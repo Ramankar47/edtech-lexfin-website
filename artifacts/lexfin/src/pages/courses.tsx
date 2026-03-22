@@ -104,7 +104,7 @@ export default function CoursesPage() {
           E-Learning
         </div>
         <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(34px, 4.5vw, 50px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-.02em", marginBottom: 12 }}>
-          Our <em style={{ fontStyle: "italic", fontWeight: 300, color: "#5A4FD6" }}>E-Learning</em>
+          Our <em style={{ fontStyle: "italic", fontWeight: 300, color: "#5A4FD6" }}>Courses</em>
         </h1>
         <p style={{ fontSize: 16, color: "#5A576B", lineHeight: 1.65, maxWidth: 500 }}>Master Indian Financial & Legal frameworks through structured, bite-sized learning.</p>
       </section>
