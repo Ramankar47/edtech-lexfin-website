@@ -9,18 +9,31 @@ const XLSX = require("xlsx");
 const router: IRouter = Router();
 
 const BLOGS_DIR = path.resolve(process.cwd(), "../../content/blogs");
+const PHOTO_DIR = path.join(BLOGS_DIR, "photo");
 
 const CATEGORY_FILES: Record<string, string> = {
   academicians: "From_Academicians.xlsx",
   students: "From_Students.xlsx",
 };
 
-function readBlogsFromXlsx(filePath: string): {
+const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp"];
+
+function resolvePhotoUrl(category: string, id: number): string | null {
+  const dir = path.join(PHOTO_DIR, category);
+  for (const ext of IMAGE_EXTENSIONS) {
+    if (fs.existsSync(path.join(dir, `${id}.${ext}`))) {
+      return `/blog-photos/${category}/${id}.${ext}`;
+    }
+  }
+  return null;
+}
+
+function readBlogsFromXlsx(filePath: string, category: string): {
   id: number;
   name: string;
   designation: string;
   blog: string;
-  photo: string;
+  photoUrl: string | null;
 }[] {
   try {
     const wb = XLSX.readFile(filePath);
@@ -30,7 +43,7 @@ function readBlogsFromXlsx(filePath: string): {
 
     const rows: any[][] = XLSX.utils.sheet_to_json(ws, { header: 1 });
 
-    // Find header row (the row containing "Name" and "Person's Blog")
+    // Find header row (the row containing "Name")
     let headerIdx = -1;
     for (let i = 0; i < rows.length; i++) {
       if (rows[i].some((cell: any) => typeof cell === "string" && cell.toLowerCase().includes("name"))) {
@@ -42,11 +55,10 @@ function readBlogsFromXlsx(filePath: string): {
     if (headerIdx === -1) return [];
 
     const headers: string[] = rows[headerIdx].map((h: any) => String(h || "").trim());
-    const numCol     = headers.findIndex(h => h === "#" || h.toLowerCase() === "number");
-    const blogCol    = headers.findIndex(h => h.toLowerCase().includes("blog"));
-    const photoCol   = headers.findIndex(h => h.toLowerCase() === "photo");
-    const nameCol    = headers.findIndex(h => h.toLowerCase() === "name");
-    const desigCol   = headers.findIndex(h => h.toLowerCase().includes("designation"));
+    const numCol   = headers.findIndex(h => h === "#" || h.toLowerCase() === "number");
+    const blogCol  = headers.findIndex(h => h.toLowerCase().includes("blog"));
+    const nameCol  = headers.findIndex(h => h.toLowerCase() === "name");
+    const desigCol = headers.findIndex(h => h.toLowerCase().includes("designation"));
 
     const results = [];
     for (let i = headerIdx + 1; i < rows.length; i++) {
@@ -54,12 +66,13 @@ function readBlogsFromXlsx(filePath: string): {
       if (!row || row.every((c: any) => c == null || c === "")) continue;
       const name = nameCol >= 0 ? String(row[nameCol] || "").trim() : "";
       if (!name) continue;
+      const id = numCol >= 0 ? Number(row[numCol] || i) : i;
       results.push({
-        id: numCol >= 0 ? Number(row[numCol] || i) : i,
+        id,
         name,
         designation: desigCol >= 0 ? String(row[desigCol] || "").trim() : "",
         blog: blogCol >= 0 ? String(row[blogCol] || "").trim() : "",
-        photo: photoCol >= 0 ? String(row[photoCol] || "").trim() : "",
+        photoUrl: resolvePhotoUrl(category, id),
       });
     }
     return results;
@@ -84,7 +97,7 @@ router.get("/:category", (req, res) => {
     return;
   }
 
-  const entries = readBlogsFromXlsx(filePath);
+  const entries = readBlogsFromXlsx(filePath, category);
   res.json({ category, entries });
 });
 

@@ -1,6 +1,7 @@
 import express, { type Express, type Request, type Response, type NextFunction } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import path from "path";
 import router from "./routes";
 
 const app: Express = express();
@@ -53,6 +54,12 @@ app.use(async (req: Request, _res: Response, next: NextFunction) => {
 
   next();
 });
+
+// Serve blog photos: content/blogs/photo/{category}/{id}.png|jpg
+app.use("/blog-photos", express.static(path.resolve(process.cwd(), "../../content/blogs/photo"), {
+  maxAge: "1d",
+  fallthrough: true,
+}));
 
 app.use("/api", router);
 
