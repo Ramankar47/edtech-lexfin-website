@@ -57,7 +57,7 @@ export default function Landing() {
                 onMouseOver={e => { e.currentTarget.style.background = "#EAE8FB"; }}
                 onMouseOut={e => { e.currentTarget.style.background = "transparent"; }}
               >
-                E-Learning
+                Browse Courses
               </button>
             </div>
 
