@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: finance-quest-api
+    env: node
+    buildCommand: pnpm install && pnpm run build
+    startCommand: cd artifacts/api-server && pnpm run start
+    envVars:
+      - key: DATABASE_URL
+        sync: false
