@@ -1,5 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useLocation } from "wouter";
+import { getApiUrl } from "@/lib/utils";
 import { Scale, Lock, ArrowLeft, Star, BookOpen } from "lucide-react";
 import { GameButton } from "@/components/ui/game-button";
 
@@ -29,7 +30,7 @@ export default function ModulesPage() {
   }, []);
 
   const handleLogin = () => {
-    window.location.href = "/api/auth/login";
+    window.location.href = getApiUrl("/api/auth/login");
   };
 
   const handleModuleClick = (mod: typeof ALL_MODULES[0]) => {

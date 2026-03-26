@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation } from "wouter";
+import { getApiUrl } from "@/lib/utils";
 import { Check, X, Star, Zap, Trophy, BookOpen, Headphones, Video, ChevronRight, ArrowLeft } from "lucide-react";
 import { GlobalHeader } from "@/components/GlobalHeader";
 import confetti from "canvas-confetti";
@@ -279,8 +280,8 @@ function UnitView({ unit, unitNumber, totalUnits, moduleTitle, onNext }: {
 
       {/* Right: media panels */}
       <div style={{ flex: "0 1 280px", display: "flex", flexDirection: "column", gap: 16 }}>
-        <AudioPanel src={`/api/content/Course1/Module1/Unit${unitNumber}/Audios/media`} />
-        <VideoPanel src={`/api/content/Course1/Module1/Unit${unitNumber}/Videos/media`} />
+        <AudioPanel src={getApiUrl(`/api/content/Course1/Module1/Unit${unitNumber}/Audios/media`)} />
+        <VideoPanel src={getApiUrl(`/api/content/Course1/Module1/Unit${unitNumber}/Videos/media`)} />
         <div style={{ background: "#FAFAF7", border: "1.5px solid #E0DCCE", borderRadius: 14, padding: "18px" }}>
           <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".07em", color: "#9A97A8", marginBottom: 10 }}>Your Progress</div>
           {Array.from({ length: totalUnits }).map((_, i) => (

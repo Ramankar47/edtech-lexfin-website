@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
+import { getApiUrl } from "@/lib/utils";
 import { useGetMe, useGetUserStats } from "@workspace/api-client-react";
 import { Map, Puzzle as PuzzleIcon, BarChart3, Flame, Star, Scale, Loader2, LogOut } from "lucide-react";
 import { MyPath } from "@/components/dashboard/my-path";
@@ -51,7 +52,7 @@ export default function Dashboard() {
           </div>
           
           <button 
-            onClick={() => window.location.href = '/api/auth/logout'}
+            onClick={() => window.location.href = getApiUrl('/api/auth/logout')}
             className="flex items-center justify-center w-10 h-10 rounded-full border-2 border-border hover:bg-secondary transition-colors group"
             title="Log Out"
           >

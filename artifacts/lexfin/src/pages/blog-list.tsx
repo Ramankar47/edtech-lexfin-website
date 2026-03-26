@@ -3,7 +3,7 @@ import { useParams, useLocation } from "wouter";
 import { GlobalHeader } from "@/components/GlobalHeader";
 import { ArrowLeft } from "lucide-react";
 
-const API_BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+const API_BASE = import.meta.env.VITE_API_URL || import.meta.env.BASE_URL.replace(/\/$/, "");
 
 const CATEGORY_META: Record<string, { label: string; icon: string; desc: string }> = {
   academicians: {
