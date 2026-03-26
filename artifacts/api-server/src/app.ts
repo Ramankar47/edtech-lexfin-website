@@ -2,6 +2,7 @@ import express, { type Express, type Request, type Response, type NextFunction }
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import path from "path";
+import fs from "fs";
 import router from "./routes";
 
 const app: Express = express();
@@ -59,6 +60,29 @@ app.use("/api", router);
 
 // Serve blog photos under /api/blog-photos so it shares the same proxy routing as API calls
 app.use("/api/blog-photos", express.static(path.resolve(process.cwd(), "../../content/blogs/photo"), {
+  maxAge: "1d",
+  fallthrough: true,
+}));
+
+// Dynamic media resolution route (finds the first valid media file in the given directory)
+app.get("/api/content/:course/:module/:unit/:type/media", (req: Request, res: Response) => {
+  const { course, module, unit, type } = req.params;
+  const dirPath = path.resolve(process.cwd(), `../../content/${course}/${module}/${unit}/${type}`);
+  
+  fs.readdir(dirPath, (err, files) => {
+    if (err || !files || files.length === 0) {
+      return res.status(404).send("Media not found");
+    }
+    const mediaFile = files.find(f => f.match(/\.(mp4|mp3|m4a|webm|ogg|wav)$/i));
+    if (!mediaFile) {
+      return res.status(404).send("Media not found");
+    }
+    res.redirect(`/api/content/${course}/${module}/${unit}/${type}/${mediaFile}`);
+  });
+});
+
+// Serve general content files (e.g. course audios and videos) under /api/content
+app.use("/api/content", express.static(path.resolve(process.cwd(), "../../content"), {
   maxAge: "1d",
   fallthrough: true,
 }));

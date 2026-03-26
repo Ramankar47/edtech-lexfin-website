@@ -2,62 +2,72 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { GlobalHeader } from "@/components/GlobalHeader";
 
-const MODULES = [
-  {
-    id: 1, emoji: "🏠", unit: "Module 1", name: "The Foundation",
-    sub: "Household Economics & Legal Awareness", hrs: "~5 hrs", sections: 4,
-    status: "active" as const,
-    topics: [
-      { head: "Advanced Economic Understanding", items: ["Types of income: earned, portfolio, and passive income", "Real vs nominal income — legal implications in taxation", "Inflation indexing in taxation and government securities"] },
-      { head: "Legal Deepening", items: ["Heads of income under the Income Tax Act, 1961", "Residential status and global income taxation", "Legal compliance for first-time taxpayers (PAN, AIS/TIS)"] },
-      { head: "Financial Inclusion & Law", items: ["Banking access under PMJDY; KYC/AML norms under RBI", "Legal safeguards for small depositors and zero-balance accounts"] },
-      { head: "Practical Component", items: ["Case study: Misclassification of income leading to tax penalties", "Activity: Identify taxable vs exempt income scenarios"] },
-    ],
-    unlockMsg: "",
-  },
-  {
-    id: 2, emoji: "💰", unit: "Module 2", name: "Managing Your Finances",
-    sub: "Personal Finance & Compliance Skills", hrs: "~5 hrs", sections: 4,
-    status: "locked" as const,
-    topics: [],
-    unlockMsg: "Complete Module 1 to unlock this module.",
-  },
-  {
-    id: 3, emoji: "🎯", unit: "Module 3", name: "Financial Planning",
-    sub: "Goal Setting & Tax Efficiency", hrs: "~5 hrs", sections: 4,
-    status: "locked" as const,
-    topics: [],
-    unlockMsg: "Complete Module 2 to unlock this module.",
-  },
-  {
-    id: 4, emoji: "🛡️", unit: "Module 4", name: "Risk & Reward",
-    sub: "Insurance, Liability & Legal Safeguards", hrs: "~5 hrs", sections: 3,
-    status: "locked" as const,
-    topics: [],
-    unlockMsg: "Complete Module 3 to unlock this module.",
-  },
-  {
-    id: 5, emoji: "📈", unit: "Module 5", name: "The Financial Landscape",
-    sub: "Markets, Regulation & Legal Rights", hrs: "~5 hrs", sections: 5,
-    status: "locked" as const,
-    topics: [],
-    unlockMsg: "Complete Module 4 to unlock this module.",
-  },
-  {
-    id: 6, emoji: "🏆", unit: "Module 6", name: "Capstone Project",
-    sub: "The LexFin Strategy", hrs: "~10 hrs", sections: 3,
-    status: "locked" as const,
-    topics: [],
-    unlockMsg: "Complete all previous modules to access the Capstone Project.",
-  },
-];
-
 export default function LearningPathPage() {
   const [, setLocation] = useLocation();
   const [openPanel, setOpenPanel] = useState<number | null>(1);
   const [lockVisible, setLockVisible] = useState<number | null>(null);
 
-  const handleNodeClick = (mod: typeof MODULES[0]) => {
+  const isMod1Passed = typeof window !== "undefined" && localStorage.getItem("mod1_passed") === "true";
+
+  const MODULES = [
+    {
+      id: 1, emoji: "🏠", unit: "Module 1", name: "The Foundation",
+      sub: "Household Economics & Legal Awareness", hrs: "~5 hrs", sections: 4,
+      status: "active" as const,
+      topics: [
+        { head: "Advanced Economic Understanding", items: ["Types of income: earned, portfolio, and passive income", "Real vs nominal income — legal implications in taxation", "Inflation indexing in taxation and government securities"] },
+        { head: "Legal Deepening", items: ["Heads of income under the Income Tax Act, 1961", "Residential status and global income taxation", "Legal compliance for first-time taxpayers (PAN, AIS/TIS)"] },
+        { head: "Financial Inclusion & Law", items: ["Banking access under PMJDY; KYC/AML norms under RBI", "Legal safeguards for small depositors and zero-balance accounts"] },
+        { head: "Practical Component", items: ["Case study: Misclassification of income leading to tax penalties", "Activity: Identify taxable vs exempt income scenarios"] },
+      ],
+      unlockMsg: "",
+    },
+    {
+      id: 2, emoji: "💰", unit: "Module 2", name: "Managing Your Finances",
+      sub: "Personal Finance & Compliance Skills", hrs: "~5 hrs", sections: 5,
+      status: isMod1Passed ? ("active" as const) : ("locked" as const),
+      topics: [
+        { head: "Advanced Budgeting & Cash Flow", items: ["Cash flow statements for individuals", "Behavioral finance biases affecting spending", "Digital financial tools and UPI ecosystem compliance"] },
+        { head: "Debt & Legal Obligations", items: ["Loan documentation: sanction letters, amortization schedules", "Legal consequences of default (SARFAESI Act overview)", "Credit score (CIBIL) and legal implications of poor credit history"] },
+        { head: "Regulatory Compliance", items: ["RBI guidelines on digital lending and recovery agents", "Fair Practices Code and grievance redressal"] },
+        { head: "Dispute Resolution", items: ["Filing complaints against banks/NBFCs through Ombudsman Scheme", "Legal recourse in harassment by recovery agents"] },
+        { head: "Practical Component", items: ["Draft a personal monthly budget with legal compliance checks", "Analyze a sample loan agreement"] },
+      ],
+      unlockMsg: "Complete Module 1 to unlock this module.",
+    },
+    {
+      id: 3, emoji: "🎯", unit: "Module 3", name: "Financial Planning",
+      sub: "Goal Setting & Tax Efficiency", hrs: "~5 hrs", sections: 4,
+      status: "locked" as const,
+      topics: [],
+      unlockMsg: "Complete Module 2 to unlock this module.",
+    },
+    {
+      id: 4, emoji: "🛡️", unit: "Module 4", name: "Risk & Reward",
+      sub: "Insurance, Liability & Legal Safeguards", hrs: "~5 hrs", sections: 3,
+      status: "locked" as const,
+      topics: [],
+      unlockMsg: "Complete Module 3 to unlock this module.",
+    },
+    {
+      id: 5, emoji: "📈", unit: "Module 5", name: "The Financial Landscape",
+      sub: "Markets, Regulation & Legal Rights", hrs: "~5 hrs", sections: 5,
+      status: "locked" as const,
+      topics: [],
+      unlockMsg: "Complete Module 4 to unlock this module.",
+    },
+    {
+      id: 6, emoji: "🏆", unit: "Module 6", name: "Capstone Project",
+      sub: "The LexFin Strategy", hrs: "~10 hrs", sections: 3,
+      status: "locked" as const,
+      topics: [],
+      unlockMsg: "Complete all previous modules to access the Capstone Project.",
+    },
+  ];
+
+  type ModuleType = typeof MODULES[0];
+
+  const handleNodeClick = (mod: ModuleType) => {
     if (mod.status === "active") {
       setOpenPanel(openPanel === mod.id ? null : mod.id);
     } else {

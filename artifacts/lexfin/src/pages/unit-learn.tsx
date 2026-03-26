@@ -57,49 +57,15 @@ const MODULE_1 = {
   ],
   quizzes: [
     {
-      title: "Quiz 1 — Income & Taxation",
-      xp: 50,
+      title: "Unit 1 — Quiz",
+      xp: 200,
       questions: [
-        { q: "Which type of income is earned with minimal active effort, such as rental income?", opts: ["Earned income", "Portfolio income", "Passive income", "Windfall income"], ans: 2, exp: "Passive income is generated with minimal ongoing effort — rental income, royalties, or profits from a limited partnership are classic examples." },
-        { q: "Under the Income Tax Act, 1961, what is the purpose of the Cost Inflation Index (CII)?", opts: ["To calculate TDS on salary", "To index the purchase cost of long-term capital assets, reducing taxable gains", "To determine residential status", "To compute GST liability"], ans: 1, exp: "The CII adjusts the purchase price of a long-term capital asset for inflation, thereby reducing the taxable capital gain under Section 48 of the IT Act." },
         { q: "If your salary grew by 4% but inflation was 6%, which of the following is TRUE?", opts: ["Your nominal income fell", "Your real income increased", "Your real income fell by 2%", "Your tax liability will decrease"], ans: 2, exp: "Real income = nominal income growth minus inflation. 4% − 6% = −2%, so your real purchasing power actually declined." },
-        { q: "How many heads of income are recognised under the Income Tax Act, 1961?", opts: ["3", "4", "5", "6"], ans: 2, exp: "The five heads of income are: Salaries, House Property, Business/Profession, Capital Gains, and Other Sources." },
-        { q: "What is the penalty section for late filing of an Income Tax Return?", opts: ["Section 80C", "Section 234F", "Section 10(14)", "Section 115BAC"], ans: 1, exp: "Section 234F imposes a late filing fee of up to ₹5,000 if the ITR is filed after the due date." },
-      ],
-    },
-    {
-      title: "Quiz 2 — Residential Status & Compliance",
-      xp: 50,
-      questions: [
         { q: "A Resident and Ordinarily Resident (ROR) in India is taxed on:", opts: ["Only income earned in India", "Only income received in India", "Global income — both India and abroad", "Only salary income"], ans: 2, exp: "An ROR is taxed on global income under Indian law — this includes all income earned or received anywhere in the world." },
-        { q: "PAN–Aadhaar linking became mandatory from:", opts: ["March 2020", "April 2022", "July 2023", "January 2024"], ans: 2, exp: "The CBDT made PAN–Aadhaar linking mandatory. Unlinked PANs became inoperative after July 1, 2023." },
-        { q: "What does AIS stand for in the context of Income Tax?", opts: ["Annual Income Statement", "Annual Information Statement", "Aggregate Income Summary", "Assessment Information Sheet"], ans: 1, exp: "AIS (Annual Information Statement) is available on the Income Tax portal and shows all financial transactions reported by third parties — banks, registrars, brokers, etc." },
-        { q: "The basic exemption limit under the new tax regime (FY 2024-25) is:", opts: ["₹2.5 lakh", "₹3 lakh", "₹3.5 lakh", "₹5 lakh"], ans: 1, exp: "Under the new tax regime (Section 115BAC), the basic exemption limit is ₹3 lakh per annum for individuals." },
-        { q: "Misclassifying income between heads most commonly leads to:", opts: ["Higher refunds", "Automatic correction by CBDT", "Tax notices and penalties", "Zero tax liability"], ans: 2, exp: "Each head of income has different deduction rules. Misclassification creates computation errors that trigger scrutiny notices and penalties." },
-      ],
-    },
-    {
-      title: "Quiz 3 — Financial Inclusion",
-      xp: 50,
-      questions: [
-        { q: "PMJDY stands for:", opts: ["Pradhan Mantri Jan Dhan Yojana", "Pradhan Mantri Jan Digital Yojana", "Public Money Jan Development Yojana", "Pradhan Mantri Jeevan Dhara Yojana"], ans: 0, exp: "PMJDY — Pradhan Mantri Jan Dhan Yojana — was launched in 2014 as India's flagship financial inclusion scheme." },
-        { q: "What is the accidental insurance cover provided under a PMJDY account?", opts: ["₹50,000", "₹1 lakh", "₹2 lakh", "₹5 lakh"], ans: 2, exp: "PMJDY accounts come with a RuPay card that provides ₹2 lakh in accidental insurance coverage." },
         { q: "Under DICGC, how much deposit is insured per depositor per bank?", opts: ["₹1 lakh", "₹2 lakh", "₹5 lakh", "₹10 lakh"], ans: 2, exp: "The DICGC insures deposits up to ₹5 lakh (principal + interest) per depositor per bank as of 2021." },
-        { q: "KYC norms are mandated under which Act?", opts: ["Banking Regulation Act, 1949", "Prevention of Money Laundering Act (PMLA), 2002", "RBI Act, 1934", "Companies Act, 2013"], ans: 1, exp: "KYC requirements flow from the PMLA, 2002, and the RBI's Master Direction on KYC, which requires banks to verify customer identity before account opening." },
-        { q: "FIU-IND receives reports of suspicious transactions from banks. FIU stands for:", opts: ["Financial Investigation Unit", "Financial Intelligence Unit", "Fiscal Inspection Unit", "Federal Inquiry Unit"], ans: 1, exp: "The Financial Intelligence Unit – India (FIU-IND) is the central national agency responsible for receiving and analysing suspicious transaction reports under AML norms." },
-      ],
-    },
-    {
-      title: "Quiz 4 — Application & Legal Awareness",
-      xp: 50,
-      questions: [
         { q: "Priya is an NRI working in Dubai. She receives rent from a flat in Mumbai and earns a salary in Dubai. Which income is taxable in India?", opts: ["Both salary and rent", "Only the Dubai salary", "Only the Mumbai rent", "Neither, as she is an NRI"], ans: 2, exp: "An NRI is taxed in India only on income earned or received in India. Mumbai rent qualifies; Dubai salary does not." },
-        { q: "Ramesh bought a house in 2018 for ₹40 lakh and sold it in 2024 for ₹70 lakh. To compute capital gains, he can reduce the purchase price using:", opts: ["SEBI NAV data", "Cost Inflation Index (CII)", "RBI repo rate", "Consumer Price Index alone"], ans: 1, exp: "Long-term capital gains on property are computed after applying the CII to the original purchase price, reducing the taxable gain under Section 48." },
-        { q: "Meera earns ₹8,000/month from a second-hand textbook rental service she runs passively. This income is classified as:", opts: ["Salary", "Capital gains", "Passive income from Other Sources", "Business income from self-employment"], ans: 2, exp: "Income generated with minimal active effort — like rentals — is classified as passive income and taxed under 'Income from Other Sources' in most cases." },
-        { q: "Which of the following is NOT covered by DICGC insurance?", opts: ["Fixed Deposits in scheduled banks", "Savings accounts in cooperative banks", "Mutual fund units held in a bank demat account", "Recurring Deposits"], ans: 2, exp: "DICGC insures bank deposits only. Mutual fund units are market-linked investments, not deposits, and are not covered by DICGC." },
-        { q: "A bank notices that a customer deposits ₹50 lakh in cash within a week with no clear business rationale. Under AML norms, the bank must:", opts: ["Freeze the account permanently", "Ignore it as a banking transaction", "Report a Suspicious Transaction Report (STR) to FIU-IND", "Charge a penalty to the customer"], ans: 2, exp: "Under PMLA, banks must file a Suspicious Transaction Report (STR) with FIU-IND within 7 days of detecting a suspicious transaction." },
       ],
-    },
+    }
   ],
   puzzle: {
     title: "Scenario Puzzle",
@@ -215,13 +181,15 @@ export default function UnitLearnPage() {
           <QuizView
             quiz={MODULE_1.quizzes[step.index]}
             quizNumber={step.index + 1}
-            onComplete={(xp) => { addXp(xp); goNext(); }}
+            onAddXp={addXp}
+            onComplete={() => goNext()}
           />
         )}
         {step.kind === "puzzle" && (
           <PuzzleView
             puzzle={MODULE_1.puzzle}
-            onComplete={(xp) => { addXp(xp); goNext(); }}
+            onAddXp={addXp}
+            onComplete={() => goNext()}
           />
         )}
         {step.kind === "complete" && (
@@ -230,7 +198,10 @@ export default function UnitLearnPage() {
             maxXp={MAX_XP}
             passed={passed}
             onRetry={() => { setStep({ kind: "quiz", index: 0 }); setXpEarned(0); }}
-            onNext={() => setLocation("/learning-path")}
+            onNext={() => {
+              if (passed) localStorage.setItem("mod1_passed", "true");
+              setLocation("/learning-path");
+            }}
           />
         )}
       </main>
@@ -268,7 +239,7 @@ function UnitView({ unit, unitNumber, totalUnits, moduleTitle, onNext }: {
           </div>
           <h1 style={{ fontFamily: "'Fraunces', serif", fontSize: "clamp(20px, 3vw, 28px)", fontWeight: 700, lineHeight: 1.15, marginBottom: 16 }}>{unit.title}</h1>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {[["Quiz ×4", "+50 XP each"], ["Puzzle", "+100 XP"]].map(([l, v]) => (
+            {[["Quiz", "Max 200 XP"], ["Puzzle", "+100 XP"]].map(([l, v]) => (
               <div key={l} style={{ display: "flex", alignItems: "center", gap: 5, background: "rgba(255,255,255,.15)", borderRadius: 100, padding: "4px 12px" }}>
                 <Star size={11} color="#FCD34D" fill="#FCD34D" />
                 <span style={{ fontSize: 12, fontWeight: 600 }}>{l}: {v}</span>
@@ -299,17 +270,17 @@ function UnitView({ unit, unitNumber, totalUnits, moduleTitle, onNext }: {
           onMouseOver={e => (e.currentTarget.style.background = "#3D34A5")}
           onMouseOut={e => (e.currentTarget.style.background = "#5A4FD6")}
         >
-          {unitNumber < totalUnits ? `Continue to Unit ${unitNumber + 1} →` : "I've read all units — Start Quiz 1 →"}
+          {unitNumber < totalUnits ? `Continue to Unit ${unitNumber + 1} →` : "I've read all units — Start Quiz →"}
         </button>
         <p style={{ textAlign: "center", fontSize: 12, color: "#9A97A8", marginTop: -8 }}>
-          {unitNumber < totalUnits ? `${totalUnits - unitNumber} unit${totalUnits - unitNumber > 1 ? "s" : ""} remaining` : "Then: 4 quizzes · 1 puzzle · Up to 300 XP"}
+          {unitNumber < totalUnits ? `${totalUnits - unitNumber} unit${totalUnits - unitNumber > 1 ? "s" : ""} remaining` : "Then: 1 quiz · 1 puzzle · Up to 300 XP"}
         </p>
       </div>
 
       {/* Right: media panels */}
       <div style={{ flex: "0 1 280px", display: "flex", flexDirection: "column", gap: 16 }}>
-        <AudioPanel />
-        <VideoPanel />
+        <AudioPanel src={`/api/content/Course1/Module1/Unit${unitNumber}/Audios/media`} />
+        <VideoPanel src={`/api/content/Course1/Module1/Unit${unitNumber}/Videos/media`} />
         <div style={{ background: "#FAFAF7", border: "1.5px solid #E0DCCE", borderRadius: 14, padding: "18px" }}>
           <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".07em", color: "#9A97A8", marginBottom: 10 }}>Your Progress</div>
           {Array.from({ length: totalUnits }).map((_, i) => (
@@ -350,14 +321,20 @@ function ContentBlock({ block }: { block: { type: string; text: string } }) {
   return null;
 }
 
-function AudioPanel() {
+function AudioPanel({ src }: { src: string }) {
   const [playing, setPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const audioRef = useRef<HTMLAudioElement>(null);
 
+  // Stop playing if the source changes (e.g., unit changes)
+  useEffect(() => {
+    setPlaying(false);
+    setProgress(0);
+  }, [src]);
+
   const toggle = () => {
     if (!audioRef.current) { setPlaying(p => !p); return; }
-    if (playing) audioRef.current.pause(); else audioRef.current.play().catch(() => {});
+    if (playing) audioRef.current.pause(); else audioRef.current.play().catch(() => { });
     setPlaying(p => !p);
   };
 
@@ -372,7 +349,7 @@ function AudioPanel() {
           <p style={{ fontSize: 11, color: "#9A97A8", margin: 0 }}>Listen to the narration</p>
         </div>
       </div>
-      <audio ref={audioRef} onTimeUpdate={() => { if (audioRef.current) setProgress((audioRef.current.currentTime / (audioRef.current.duration || 1)) * 100); }} onEnded={() => setPlaying(false)} />
+      <audio src={src} ref={audioRef} onTimeUpdate={() => { if (audioRef.current) setProgress((audioRef.current.currentTime / (audioRef.current.duration || 1)) * 100); }} onEnded={() => setPlaying(false)} />
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <button onClick={toggle} style={{ width: 38, height: 38, borderRadius: "50%", background: "#5A4FD6", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           {playing ? <span style={{ width: 8, height: 10, background: "#fff", borderRadius: 1, boxShadow: "5px 0 0 #fff" }} /> : <span style={{ width: 0, height: 0, borderTop: "6px solid transparent", borderBottom: "6px solid transparent", borderLeft: "10px solid #fff", marginLeft: 2 }} />}
@@ -383,23 +360,19 @@ function AudioPanel() {
           </div>
         </div>
       </div>
-      <p style={{ fontSize: 11, color: "#C8C5D8", marginTop: 8, textAlign: "center", margin: "10px 0 0" }}>Audio will be available soon</p>
     </div>
   );
 }
 
-function VideoPanel() {
+function VideoPanel({ src }: { src: string }) {
   return (
     <div style={{ background: "#fff", border: "1.5px solid #E0DCCE", borderRadius: 14, overflow: "hidden" }}>
       <div style={{ padding: "10px 14px", borderBottom: "1px solid #E0DCCE", display: "flex", alignItems: "center", gap: 7, background: "#FAFAF7" }}>
         <Video size={14} color="#5A4FD6" />
         <span style={{ fontSize: 13, fontWeight: 600, color: "#5A4FD6" }}>Video Lesson</span>
       </div>
-      <div style={{ background: "#1C1A28", aspectRatio: "16/9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 }}>
-        <div style={{ width: 42, height: 42, borderRadius: "50%", background: "rgba(90,79,214,.8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <span style={{ width: 0, height: 0, borderTop: "8px solid transparent", borderBottom: "8px solid transparent", borderLeft: "14px solid #fff", marginLeft: 3 }} />
-        </div>
-        <span style={{ fontSize: 11, color: "rgba(255,255,255,.4)" }}>Video coming soon</span>
+      <div style={{ background: "#1C1A28", aspectRatio: "16/9", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, overflow: "hidden" }}>
+        <video key={src} src={src} controls style={{ width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
     </div>
   );
@@ -408,16 +381,15 @@ function VideoPanel() {
 // ─────────────────────────────────────────────
 //  Quiz View
 // ─────────────────────────────────────────────
-function QuizView({ quiz, quizNumber, onComplete }: {
+function QuizView({ quiz, quizNumber, onAddXp, onComplete }: {
   quiz: typeof MODULE_1.quizzes[0];
   quizNumber: number;
-  onComplete: (xp: number) => void;
+  onAddXp: (xp: number) => void;
+  onComplete: () => void;
 }) {
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const [correct, setCorrect] = useState(0);
-  const [done, setDone] = useState(false);
 
   const q = quiz.questions[idx];
 
@@ -425,42 +397,20 @@ function QuizView({ quiz, quizNumber, onComplete }: {
     if (revealed) return;
     setSelected(i);
     setRevealed(true);
-    if (i === q.ans) setCorrect(c => c + 1);
+    if (i === q.ans) {
+      onAddXp(quiz.xp / quiz.questions.length);
+    }
   };
 
   const handleNext = () => {
-    if (idx + 1 >= quiz.questions.length) { setDone(true); return; }
+    if (idx + 1 >= quiz.questions.length) {
+      onComplete();
+      return;
+    }
     setIdx(v => v + 1);
     setSelected(null);
     setRevealed(false);
   };
-
-  if (done) {
-    const earned = Math.round((correct / quiz.questions.length) * quiz.xp);
-    return (
-      <div style={{ maxWidth: 620, margin: "0 auto" }}>
-        <div style={{ background: "#fff", border: "1.5px solid #E0DCCE", borderRadius: 20, padding: "48px 36px", textAlign: "center" }}>
-          <div style={{ width: 80, height: 80, borderRadius: "50%", background: "#EAE8FB", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
-            <Trophy size={36} color="#5A4FD6" />
-          </div>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700, color: "#1C1A28", marginBottom: 6 }}>Quiz {quizNumber} Done!</h2>
-          <p style={{ color: "#9A97A8", fontSize: 14, marginBottom: 24 }}>{correct} / {quiz.questions.length} correct · {Math.round((correct / quiz.questions.length) * 100)}% accuracy</p>
-          <div style={{ background: "#FEF9EC", border: "1.5px solid #F3D88A", borderRadius: 14, padding: "20px 24px", marginBottom: 28 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-              <Zap size={22} color="#F59E0B" fill="#F59E0B" />
-              <span style={{ fontSize: 32, fontWeight: 800, color: "#B45309" }}>+{earned} XP</span>
-            </div>
-          </div>
-          <button
-            onClick={() => onComplete(earned)}
-            style={{ width: "100%", padding: "15px 24px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
-          >
-            {quizNumber < MODULE_1.quizzes.length ? `Start Quiz ${quizNumber + 1} →` : "Go to Puzzle →"}
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const opts = ["A", "B", "C", "D"];
 
@@ -469,7 +419,7 @@ function QuizView({ quiz, quizNumber, onComplete }: {
       {/* Quiz card */}
       <div style={{ background: "#5A4FD6", borderRadius: 16, padding: "22px 28px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,.6)", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 4 }}>Practical Component</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,.6)", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 4 }}>Module 1 • {MODULE_1.title}</div>
           <div style={{ fontSize: 17, fontWeight: 600, color: "#fff" }}>{quiz.title}</div>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -478,7 +428,7 @@ function QuizView({ quiz, quizNumber, onComplete }: {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,.15)", borderRadius: 100, padding: "5px 14px" }}>
             <Star size={12} color="#FCD34D" fill="#FCD34D" />
-            <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>+{quiz.xp} XP</span>
+            <span style={{ fontSize: 13, color: "#fff", fontWeight: 600 }}>+{quiz.xp / quiz.questions.length} XP</span>
           </div>
         </div>
       </div>
@@ -538,7 +488,7 @@ function QuizView({ quiz, quizNumber, onComplete }: {
             onClick={handleNext}
             style={{ width: "100%", padding: "15px 24px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
           >
-            {idx + 1 >= quiz.questions.length ? "See Results →" : "Next Question →"}
+            {idx + 1 >= quiz.questions.length ? "Puzzle →" : "Next →"}
           </button>
         </div>
       )}
@@ -549,9 +499,10 @@ function QuizView({ quiz, quizNumber, onComplete }: {
 // ─────────────────────────────────────────────
 //  Puzzle View
 // ─────────────────────────────────────────────
-function PuzzleView({ puzzle, onComplete }: {
+function PuzzleView({ puzzle, onAddXp, onComplete }: {
   puzzle: typeof MODULE_1.puzzle;
-  onComplete: (xp: number) => void;
+  onAddXp: (xp: number) => void;
+  onComplete: () => void;
 }) {
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
@@ -602,7 +553,13 @@ function PuzzleView({ puzzle, onComplete }: {
           return (
             <button
               key={i}
-              onClick={() => { if (!revealed) { setSelected(i); setRevealed(true); } }}
+              onClick={() => {
+                if (!revealed) {
+                  setSelected(i);
+                  setRevealed(true);
+                  if (i === puzzle.ans) onAddXp(puzzle.xp);
+                }
+              }}
               disabled={revealed}
               style={{
                 textAlign: "left", padding: "15px 20px", borderRadius: 12, fontSize: 13.5, cursor: revealed ? "default" : "pointer",
@@ -613,7 +570,7 @@ function PuzzleView({ puzzle, onComplete }: {
               }}
             >
               <div style={{ width: 24, height: 24, borderRadius: "50%", background: showCorrect ? "#059669" : showWrong ? "#DC2626" : "#ECEAF4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>
-                {showCorrect ? <Check size={12} color="#fff" strokeWidth={3} /> : showWrong ? <X size={12} color="#fff" strokeWidth={3} /> : <span style={{ fontSize: 10, fontWeight: 700, color: "#9A97A8" }}>{["A","B","C","D"][i]}</span>}
+                {showCorrect ? <Check size={12} color="#fff" strokeWidth={3} /> : showWrong ? <X size={12} color="#fff" strokeWidth={3} /> : <span style={{ fontSize: 10, fontWeight: 700, color: "#9A97A8" }}>{["A", "B", "C", "D"][i]}</span>}
               </div>
               {opt}
             </button>
@@ -631,7 +588,7 @@ function PuzzleView({ puzzle, onComplete }: {
             </div>
           </div>
           <button
-            onClick={() => onComplete(isCorrect ? puzzle.xp : 0)}
+            onClick={() => onComplete()}
             style={{ width: "100%", padding: "15px 24px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
           >
             See Final Results →
@@ -684,7 +641,7 @@ function CompleteView({ xpEarned, maxXp, passed, onRetry, onNext }: {
           </div>
           {/* Score breakdown */}
           <div style={{ marginTop: 16, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            {[["Quiz ×4", `Max ${4 * 50} XP`], ["Puzzle", "Max 100 XP"]].map(([l, v]) => (
+            {[["Quiz", `Max 200 XP`], ["Puzzle", "Max 100 XP"]].map(([l, v]) => (
               <div key={l} style={{ fontSize: 11, color: "#9A97A8", background: "rgba(0,0,0,.04)", borderRadius: 100, padding: "4px 12px" }}>{l}: {v}</div>
             ))}
           </div>
