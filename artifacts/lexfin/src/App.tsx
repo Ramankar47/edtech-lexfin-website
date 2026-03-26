@@ -12,6 +12,7 @@ import StudyMaterialPage from "@/pages/study-material";
 import RegulatoryAlertsPage from "@/pages/regulatory-alerts";
 import UnitLearnPage from "@/pages/unit-learn";
 import NotFound from "@/pages/not-found";
+import LoginUnavailablePage from "@/pages/login-unavailable";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/regulatory-alerts" component={RegulatoryAlertsPage} />
       <Route path="/module/:moduleId/learn" component={UnitLearnPage} />
       <Route path="/dashboard" component={Dashboard} />
+      <Route path="/login-unavailable" component={LoginUnavailablePage} />
       <Route component={NotFound} />
     </Switch>
   );

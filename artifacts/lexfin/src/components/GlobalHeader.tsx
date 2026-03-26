@@ -1,5 +1,4 @@
 import { useLocation } from "wouter";
-import { getApiUrl } from "@/lib/utils";
 
 const LOGO_SVG = (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -118,7 +117,7 @@ export function GlobalHeader() {
         }}
         onMouseOver={e => (e.currentTarget.style.background = "#5A4FD6")}
         onMouseOut={e => (e.currentTarget.style.background = "#1C1A28")}
-        onClick={() => window.location.href = getApiUrl("/api/auth/login")}
+        onClick={() => setLocation("/login-unavailable")}
       >
         Log In
       </button>
