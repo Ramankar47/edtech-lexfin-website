@@ -4,7 +4,10 @@ import path from "path";
 import fs from "fs";
 import { db } from "@workspace/db";
 import {
-  usersTable, userLessonProgressTable, lessonsTable, activityTable
+  usersTable,
+  userLessonProgressTable,
+  lessonsTable,
+  activityTable,
 } from "@workspace/db/schema";
 import { eq, and } from "drizzle-orm";
 
@@ -16,19 +19,22 @@ const router: IRouter = Router();
 const CONTENT_DIR = path.resolve(process.cwd(), "../../content/modules");
 
 const MODULE_DIRS: Record<number, string> = {
-  1:  "module-1-consumer-protection-law",
-  2:  "module-2-income-tax-basics",
-  3:  "module-3-securities-capital-markets",
-  4:  "module-4-contract-law-fundamentals",
-  5:  "module-5-banking-rbi-regulations",
-  6:  "module-6-property-real-estate-law",
-  7:  "module-7-gst-indirect-taxes",
-  8:  "module-8-startup-company-law",
-  9:  "module-9-insurance-laws",
+  1: "module-1-consumer-protection-law",
+  2: "module-2-income-tax-basics",
+  3: "module-3-securities-capital-markets",
+  4: "module-4-contract-law-fundamentals",
+  5: "module-5-banking-rbi-regulations",
+  6: "module-6-property-real-estate-law",
+  7: "module-7-gst-indirect-taxes",
+  8: "module-8-startup-company-law",
+  9: "module-9-insurance-laws",
   10: "module-10-digital-finance-cyber-laws",
 };
 
-function readSheet<T = Record<string, any>>(filePath: string, sheetName: string): T[] {
+function readSheet<T = Record<string, any>>(
+  filePath: string,
+  sheetName: string,
+): T[] {
   try {
     const wb = XLSX.readFile(filePath);
     const ws = wb.Sheets[sheetName];
@@ -63,24 +69,25 @@ router.get("/:moduleId", async (req, res) => {
     return;
   }
 
-  const info    = readSheet(xlsxPath, "Info");
+  const info = readSheet(xlsxPath, "Info");
   const content = readSheet(xlsxPath, "Content");
-  const quiz1   = readSheet(xlsxPath, "Quiz1");
-  const quiz2   = readSheet(xlsxPath, "Quiz2");
-  const puzzle  = readSheet(xlsxPath, "Puzzle");
+  const quiz1 = readSheet(xlsxPath, "Quiz1");
+  const quiz2 = readSheet(xlsxPath, "Quiz2");
+  const puzzle = readSheet(xlsxPath, "Puzzle");
 
   const hasAudio = fs.existsSync(path.join(moduleDir, "audio", "lesson.mp3"));
   const hasVideo = fs.existsSync(path.join(moduleDir, "video", "lesson.mp4"));
 
-  const sort = (arr: any[]) => arr.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const sort = (arr: any[]) =>
+    arr.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
   res.json({
     moduleId,
     info: info[0] || {},
     content: sort(content as any[]),
-    quiz1:   sort(quiz1 as any[]),
-    quiz2:   sort(quiz2 as any[]),
-    puzzle:  sort(puzzle as any[]),
+    quiz1: sort(quiz1 as any[]),
+    quiz2: sort(quiz2 as any[]),
+    puzzle: sort(puzzle as any[]),
     hasAudio,
     hasVideo,
     audioUrl: hasAudio ? `/api/content/${moduleId}/audio` : null,
@@ -96,14 +103,22 @@ router.post("/:moduleId/complete", async (req, res) => {
     return;
   }
 
-  const moduleId   = parseInt(req.params.moduleId);
-  const { xpEarned = 0, maxXp = 200 } = req.body as { xpEarned: number; maxXp: number };
+  const moduleId = parseInt(req.params.moduleId);
+  const { xpEarned = 0, maxXp = 200 } = req.body as {
+    xpEarned: number;
+    maxXp: number;
+  };
 
   const MIN_PASS_XP = 150; // 75% of 200
-  const passed      = xpEarned >= MIN_PASS_XP;
+  const passed = xpEarned >= MIN_PASS_XP;
 
   if (!passed) {
-    res.json({ passed: false, message: "Score below 75%. Keep practising!", xpEarned, minRequired: MIN_PASS_XP });
+    res.json({
+      passed: false,
+      message: "Score below 75%. Keep practising!",
+      xpEarned,
+      minRequired: MIN_PASS_XP,
+    });
     return;
   }
 
@@ -119,10 +134,12 @@ router.post("/:moduleId/complete", async (req, res) => {
       const existing = await db
         .select()
         .from(userLessonProgressTable)
-        .where(and(
-          eq(userLessonProgressTable.userId, userId),
-          eq(userLessonProgressTable.lessonId, lesson.id)
-        ));
+        .where(
+          and(
+            eq(userLessonProgressTable.userId, userId),
+            eq(userLessonProgressTable.lessonId, lesson.id),
+          ),
+        );
 
       if (existing.length === 0) {
         await db.insert(userLessonProgressTable).values({
@@ -134,21 +151,28 @@ router.post("/:moduleId/complete", async (req, res) => {
           completedAt: new Date(),
         });
       } else {
-        await db.update(userLessonProgressTable)
+        await db
+          .update(userLessonProgressTable)
           .set({ completed: true, completedAt: new Date() })
-          .where(and(
-            eq(userLessonProgressTable.userId, userId),
-            eq(userLessonProgressTable.lessonId, lesson.id)
-          ));
+          .where(
+            and(
+              eq(userLessonProgressTable.userId, userId),
+              eq(userLessonProgressTable.lessonId, lesson.id),
+            ),
+          );
       }
     }
 
     // Award XP to user
-    const [user] = await db.select().from(usersTable).where(eq(usersTable.id, userId));
+    const [user] = await db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
     if (user) {
-      const newXp    = user.totalXp + xpEarned;
+      const newXp = user.totalXp + xpEarned;
       const newLevel = Math.floor(newXp / 100) + 1;
-      await db.update(usersTable)
+      await db
+        .update(usersTable)
         .set({ totalXp: newXp, level: newLevel })
         .where(eq(usersTable.id, userId));
 
@@ -175,17 +199,29 @@ router.post("/:moduleId/complete", async (req, res) => {
 // GET audio / video static files
 router.get("/:moduleId/audio", (req, res) => {
   const moduleDir = getModuleDir(parseInt(req.params.moduleId));
-  if (!moduleDir) { res.status(404).end(); return; }
+  if (!moduleDir) {
+    res.status(404).end();
+    return;
+  }
   const p = path.join(moduleDir, "audio", "lesson.mp3");
-  if (!fs.existsSync(p)) { res.status(404).end(); return; }
+  if (!fs.existsSync(p)) {
+    res.status(404).end();
+    return;
+  }
   res.sendFile(p);
 });
 
 router.get("/:moduleId/video", (req, res) => {
   const moduleDir = getModuleDir(parseInt(req.params.moduleId));
-  if (!moduleDir) { res.status(404).end(); return; }
+  if (!moduleDir) {
+    res.status(404).end();
+    return;
+  }
   const p = path.join(moduleDir, "video", "lesson.mp4");
-  if (!fs.existsSync(p)) { res.status(404).end(); return; }
+  if (!fs.existsSync(p)) {
+    res.status(404).end();
+    return;
+  }
   res.sendFile(p);
 });
 
