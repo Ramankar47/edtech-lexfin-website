@@ -360,7 +360,7 @@ export default function Landing() {
               }}
             />
             <img
-              src={`${import.meta.env.BASE_URL}images/hero-balance.png`}
+              src={`${import.meta.env.BASE_URL}images/hero-legal-finance.jpg`}
               alt="LexFin — Financial & Legal Literacy"
               style={{
                 position: "relative",
@@ -758,6 +758,195 @@ export default function Landing() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── ABOUT SGT UNIVERSITY ────────────────────────── */}
+      <section
+        style={{
+          background: "#FAFAF7",
+          borderTop: "1px solid #E0DCCE",
+          borderBottom: "1px solid #E0DCCE",
+          padding: "80px 48px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1100,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 64,
+            flexWrap: "wrap",
+          }}
+        >
+          <div style={{ flex: 1, minWidth: 320 }}>
+            <img
+              src={`${import.meta.env.BASE_URL}images/sgt-university-campus.jpg`}
+              alt="SGT University Campus"
+              style={{
+                width: "100%",
+                height: "auto",
+                borderRadius: 20,
+                boxShadow: "0 12px 32px rgba(0,0,0,0.08)",
+              }}
+            />
+          </div>
+          <div style={{ flex: 1.2, minWidth: 320 }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                letterSpacing: ".06em",
+                textTransform: "uppercase",
+                color: "#5A4FD6",
+                marginBottom: 16,
+              }}
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: 20,
+                  height: 2,
+                  background: "#5A4FD6",
+                  borderRadius: 2,
+                }}
+              />
+              Partner Institution
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Fraunces', serif",
+                fontSize: "clamp(26px, 3.5vw, 42px)",
+                fontWeight: 700,
+                letterSpacing: "-.02em",
+                color: "#1C1A28",
+                marginBottom: 20,
+                lineHeight: 1.1,
+              }}
+            >
+              About{" "}
+              <em style={{ fontStyle: "italic", fontWeight: 300, color: "#5A4FD6" }}>
+                SGT University
+              </em>
+            </h2>
+            <p
+              style={{
+                fontSize: 15,
+                color: "#5A576B",
+                lineHeight: 1.7,
+                marginBottom: 16,
+              }}
+            >
+              Shree Guru Gobind Singh Tricentenary (SGT) University, Gurugram, is a premier multidisciplinary institution established in 2013 under the Haryana Private Universities Act. Recognized by the University Grants Commission (UGC) and accredited with an NAAC A+ grade, the university has rapidly emerged as a centre of excellence in higher education.
+            </p>
+            <p
+              style={{
+                fontSize: 15,
+                color: "#5A576B",
+                lineHeight: 1.7,
+              }}
+            >
+              Spread across a sprawling campus of over 70 acres, SGT University offers a wide spectrum of academic programs through its 19 faculties, ranging from law, engineering, and management to medical and health sciences. The university is deeply committed to promoting innovation, research, and holistic development.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── ABOUT LEXFIN INITIATIVE ────────────────────── */}
+      <section
+        style={{
+          background: "#F0EDE6",
+          borderBottom: "1px solid #E0DCCE",
+          padding: "80px 48px",
+        }}
+      >
+        <div
+          style={{
+            maxWidth: 1100,
+            margin: "0 auto",
+            display: "flex",
+            alignItems: "center",
+            gap: 64,
+            flexWrap: "wrap-reverse",
+          }}
+        >
+          <div style={{ flex: 1.2, minWidth: 320 }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                fontSize: 12,
+                fontWeight: 600,
+                letterSpacing: ".06em",
+                textTransform: "uppercase",
+                color: "#C9933A",
+                marginBottom: 16,
+              }}
+            >
+              <span
+                style={{
+                  display: "block",
+                  width: 20,
+                  height: 2,
+                  background: "#C9933A",
+                  borderRadius: 2,
+                }}
+              />
+              Our Philosophy
+            </div>
+            <h2
+              style={{
+                fontFamily: "'Fraunces', serif",
+                fontSize: "clamp(26px, 3.5vw, 42px)",
+                fontWeight: 700,
+                letterSpacing: "-.02em",
+                color: "#1C1A28",
+                marginBottom: 20,
+                lineHeight: 1.1,
+              }}
+            >
+              The{" "}
+              <em style={{ fontStyle: "italic", fontWeight: 300, color: "#C9933A" }}>
+                LexFin Initiative
+              </em>
+            </h2>
+            <p
+              style={{
+                fontSize: 15,
+                color: "#5A576B",
+                lineHeight: 1.7,
+                marginBottom: 16,
+              }}
+            >
+              The LexFin Financial Literacy website is an innovative initiative aimed at simplifying financial concepts and making them accessible to students and the general public. Inspired by the integration of legal and financial expertise, LexFin represents a platform where financial awareness meets practical application.
+            </p>
+            <p
+              style={{
+                fontSize: 15,
+                color: "#5A576B",
+                lineHeight: 1.7,
+              }}
+            >
+              By bridging the gap between theoretical knowledge and real-world financial understanding, LexFin empowers learners with essential tools for informed decision-making in savings, budgeting, and regulatory frameworks like RBI and SEBI.
+            </p>
+          </div>
+          <div style={{ flex: 1, minWidth: 320 }}>
+            <img
+              src={`${import.meta.env.BASE_URL}images/lexfin-initiative-banner.jpg`}
+              alt="LexFin Initiative Banner"
+              style={{
+                width: "100%",
+                height: "auto",
+                borderRadius: 20,
+                boxShadow: "0 12px 32px rgba(0,0,0,0.08)",
+              }}
+            />
           </div>
         </div>
       </section>
