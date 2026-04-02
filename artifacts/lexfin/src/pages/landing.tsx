@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { GlobalHeader } from "@/components/GlobalHeader";
 import { motion, AnimatePresence } from "framer-motion";
+import { InteractiveLearningModal } from "@/components/InteractiveLearning";
 
 const SLIDESHOW_IMAGES = [
   "images/slideshow/4679196.jpg",
@@ -144,7 +145,7 @@ export default function Landing() {
   useEffect(() => {
     const timer = setInterval(() => {
       setActiveSlide(s => (s + 1) % SLIDESHOW_IMAGES.length);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(timer);
   }, []);
 
@@ -239,21 +240,21 @@ export default function Landing() {
 
               {loadingContent ? (
                 <div style={{ padding: 40, textAlign: "center", color: "#5A576B" }}>Loading content...</div>
+              ) : modalCategory === 'interactivelearning' ? (
+                <InteractiveLearningModal />
               ) : modalContent.length === 0 ? (
                 <div style={{ padding: 40, textAlign: "center", color: "#9A97A8", background: "#F9F9F9", borderRadius: 12 }}>
                   No media content published yet. Check back soon!
                 </div>
-              ) : modalCategory === 'interactivelearning' ? (
-                <QuizComponent questions={modalContent} />
               ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   {modalContent.map((file, i) => (
                     <div key={i} style={{ background: "#F9F9F9", border: "1px solid #EAE8FB", borderRadius: 12, padding: 16 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: file.type === "other" || file.type === "doc" ? 0 : 12 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
                         <div style={{ fontSize: 24 }}>
                           {file.type === "video" ? "🎬" : file.type === "audio" ? "🎧" : file.type === "doc" ? "📄" : "📁"}
                         </div>
-                        <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#1C1A28" }}>{file.name}</h4>
+                        <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#1C1A28" }}>{file.name.replace(/\.[^/.]+$/, "")}</h4>
                       </div>
                       
                       {file.type === "video" && (
@@ -263,26 +264,53 @@ export default function Landing() {
                         <audio src={file.url} controls style={{ width: "100%" }}></audio>
                       )}
                       {(file.type === "other" || file.type === "doc") && (
-                        <div style={{ marginTop: 8 }}>
-                          <a 
-                            href={file.url} 
-                            target="_blank" 
-                            rel="noreferrer" 
-                            style={{ 
-                              display: "inline-flex", 
-                              alignItems: "center", 
-                              gap: 6, 
-                              color: "#5A4FD6", 
-                              textDecoration: "none", 
-                              fontWeight: 600,
-                              fontSize: 14,
-                              background: "#EAE8FB",
-                              padding: "6px 12px",
-                              borderRadius: 8
-                            }}
-                          >
-                            Download / View File ↓
-                          </a>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                          {file.url.toLowerCase().endsWith(".pdf") || file.url.toLowerCase().endsWith(".txt") ? (
+                            <iframe src={file.url} style={{ width: "100%", height: "450px", borderRadius: 8, border: "1px solid #EAE8FB", background: "#fff" }} title={file.name} />
+                          ) : (
+                            <div style={{ width: "100%", height: 120, borderRadius: 8, border: "1px dashed #E0DCCE", background: "#FAFAF7", display: "flex", alignItems: "center", justifyContent: "center", color: "#9A97A8", fontSize: 14 }}>
+                              Document preview not available natively. Please view via Google Drive or download.
+                            </div>
+                          )}
+                          <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                            <a 
+                              href={file.url} 
+                              download
+                              style={{ 
+                                display: "inline-flex", 
+                                alignItems: "center", 
+                                gap: 6, 
+                                color: "#fff", 
+                                textDecoration: "none", 
+                                fontWeight: 600,
+                                fontSize: 13,
+                                background: "#5A4FD6",
+                                padding: "8px 16px",
+                                borderRadius: 8
+                              }}
+                            >
+                              Download File ↓
+                            </a>
+                            <a 
+                              href={`https://docs.google.com/viewer?url=${encodeURIComponent(window.location.origin + file.url)}`}
+                              target="_blank" 
+                              rel="noreferrer" 
+                              style={{ 
+                                display: "inline-flex", 
+                                alignItems: "center", 
+                                gap: 6, 
+                                color: "#5A4FD6", 
+                                textDecoration: "none", 
+                                fontWeight: 600,
+                                fontSize: 13,
+                                background: "#EAE8FB",
+                                padding: "8px 16px",
+                                borderRadius: 8
+                              }}
+                            >
+                              View in Google Docs 👁️
+                            </a>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -504,39 +532,49 @@ export default function Landing() {
         `}</style>
       </section>
 
-      {/* ─── WHY CHOOSE LEXFIN ────────────────────────────── */}
+      {/* ─── FULL WIDTH SLIDESHOW ────────────────────────────── */}
       <section
         style={{
+          width: "100%",
+          height: "60vh",
+          minHeight: 400,
           position: "relative",
+          overflow: "hidden",
           borderTop: "1px solid #E0DCCE",
-          borderBottom: "1px solid #E0DCCE",
-          padding: "80px 48px",
-          minHeight: 600,
         }}
       >
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSlide}
-            initial={{ opacity: 0, scale: 1.1, filter: "blur(12px)" }}
-            animate={{ opacity: 1, scale: 1.05, filter: "blur(6px)" }}
-            exit={{ opacity: 0, scale: 1, filter: "blur(12px)" }}
-            transition={{ 
-              opacity: { duration: 2 }, 
-              scale: { duration: 10, ease: "linear" },
-              filter: { duration: 2 }
-            }}
+            initial={{ opacity: 0, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.03 }}
+            transition={{ duration: 1.8 }}
             style={{
               position: "absolute",
               inset: 0,
-              zIndex: 0,
               backgroundImage: `url("${import.meta.env.BASE_URL}${SLIDESHOW_IMAGES[activeSlide]}")`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}
           />
         </AnimatePresence>
-        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "rgba(255,255,255,0.45)", backdropFilter: "blur(4px)" }} />
 
+        {/* ─── BORDER FADE EFFECTS ────────────────────────────── */}
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to bottom, #F0EDE6 0%, transparent 12%, transparent 88%, #F9F9F9 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to right, #F0EDE6 0%, transparent 8%, transparent 92%, #F0EDE6 100%)" }} />
+
+      </section>
+
+      {/* ─── WHY CHOOSE LEXFIN ────────────────────────────── */}
+      <section
+        style={{
+          position: "relative",
+          borderBottom: "1px solid #E0DCCE",
+          padding: "80px 48px",
+          background: "#F9F9F9",
+        }}
+      >
         <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: 52 }}>

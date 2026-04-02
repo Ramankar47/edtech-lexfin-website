@@ -1,15 +1,5 @@
 import { useLocation } from "wouter";
 
-const LOGO_SVG = (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <circle cx="9" cy="4" r="2" stroke="#fff" strokeWidth="1.5"/>
-    <line x1="9" y1="6" x2="9" y2="9" stroke="#fff" strokeWidth="1.5"/>
-    <line x1="3" y1="9" x2="15" y2="9" stroke="#fff" strokeWidth="1.5"/>
-    <path d="M3 9L1 14H5Z" stroke="#fff" strokeWidth="1.2" fill="none" strokeLinejoin="round"/>
-    <path d="M15 9L13 14H17Z" stroke="#fff" strokeWidth="1.2" fill="none" strokeLinejoin="round"/>
-  </svg>
-);
-
 const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "E-Learning", href: "/courses" },
@@ -53,21 +43,20 @@ export function GlobalHeader() {
           textDecoration: "none",
         }}
       >
-        <div
-          style={{
-            width: 32,
-            height: 32,
-            background: "#5A4FD6",
-            borderRadius: 8,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexShrink: 0,
+        <img
+          src={`${import.meta.env.BASE_URL}images/lexfin-logo.png`}
+          alt="LexFin"
+          style={{ 
+            height: 60, 
+            objectFit: "contain", 
+            filter: "contrast(1.05)",
+            transform: "scale(1.5)",
+            transformOrigin: "left center",
+            transition: "transform 0.25s ease-out",
           }}
-        >
-          {LOGO_SVG}
-        </div>
-        LexFin
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.55)")}
+          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1.5)")}
+        />
       </button>
 
       <nav className="lexfin-nav" style={{ display: "flex", alignItems: "center", gap: 4 }}>

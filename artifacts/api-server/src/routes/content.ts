@@ -53,6 +53,102 @@ function getModuleDir(moduleId: number): string | null {
   return fs.existsSync(fullPath) ? fullPath : null;
 }
 
+// GET /api/content/studymaterial/:category — list files
+router.get("/studymaterial/:category", (req, res) => {
+  const category = req.params.category;
+  const dirPath = path.join(process.cwd(), "../../content/StudyMaterial", category);
+  
+  if (!fs.existsSync(dirPath)) {
+    res.json([]);
+    return;
+  }
+  
+  try {
+    const files = fs.readdirSync(dirPath);
+    const result = files
+      .filter(f => !f.startsWith('.'))
+      .map(file => {
+        const ext = path.extname(file).toLowerCase();
+        let type = 'other';
+        if (['.mp4', '.webm', '.ogg', '.m4v'].includes(ext)) {
+          type = 'video';
+        } else if (['.mp3', '.wav', '.m4a', '.aac'].includes(ext)) {
+          type = 'audio';
+        } else if (['.docx', '.pdf', '.pptx', '.xlsx', '.txt'].includes(ext)) {
+          type = 'doc';
+        }
+        return {
+          name: file,
+          url: `/api/content/studymaterial/${category}/${encodeURIComponent(file)}`,
+          type
+        };
+      });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read directory" });
+  }
+});
+
+// GET /api/content/studymaterial/:category/:filename — serve the file
+router.get("/studymaterial/:category/:filename", (req, res) => {
+  const { category, filename } = req.params;
+  const filePath = path.join(process.cwd(), "../../content/StudyMaterial", category, filename);
+  
+  if (!fs.existsSync(filePath)) {
+    res.status(404).end();
+    return;
+  }
+  res.sendFile(filePath);
+});
+
+// GET /api/content/home/:category — list files in the category folder
+router.get("/home/:category", (req, res) => {
+  const category = req.params.category;
+  const dirPath = path.join(process.cwd(), "../../content/home", category);
+  
+  if (!fs.existsSync(dirPath)) {
+    res.json([]);
+    return;
+  }
+  
+  try {
+    const files = fs.readdirSync(dirPath);
+    const result = files
+      .filter(f => !f.startsWith('.'))
+      .map(file => {
+        const ext = path.extname(file).toLowerCase();
+        let type = 'other';
+        if (['.mp4', '.webm', '.ogg', '.m4v'].includes(ext)) {
+          type = 'video';
+        } else if (['.mp3', '.wav', '.m4a', '.aac'].includes(ext)) {
+          type = 'audio';
+        } else if (['.docx', '.pdf', '.pptx', '.xlsx', '.txt'].includes(ext)) {
+          type = 'doc';
+        }
+        return {
+          name: file,
+          url: `/api/content/home/${category}/${encodeURIComponent(file)}`,
+          type
+        };
+      });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read directory" });
+  }
+});
+
+// GET /api/content/home/:category/:filename — serve the file
+router.get("/home/:category/:filename", (req, res) => {
+  const { category, filename } = req.params;
+  const filePath = path.join(process.cwd(), "../../content/home", category, filename);
+  
+  if (!fs.existsSync(filePath)) {
+    res.status(404).end();
+    return;
+  }
+  res.sendFile(filePath);
+});
+
 // GET /api/content/:moduleId — fetch Excel-driven content
 router.get("/:moduleId", async (req, res) => {
   const moduleId = parseInt(req.params.moduleId);
@@ -223,54 +319,6 @@ router.get("/:moduleId/video", (req, res) => {
     return;
   }
   res.sendFile(p);
-});
-
-// GET /api/content/home/:category — list files in the category folder
-router.get("/home/:category", (req, res) => {
-  const category = req.params.category;
-  const dirPath = path.join(process.cwd(), "../../content/home", category);
-  
-  if (!fs.existsSync(dirPath)) {
-    res.json([]);
-    return;
-  }
-  
-  try {
-    const files = fs.readdirSync(dirPath);
-    const result = files
-      .filter(f => !f.startsWith('.'))
-      .map(file => {
-        const ext = path.extname(file).toLowerCase();
-        let type = 'other';
-        if (['.mp4', '.webm', '.ogg', '.m4v'].includes(ext)) {
-          type = 'video';
-        } else if (['.mp3', '.wav', '.m4a', '.aac'].includes(ext)) {
-          type = 'audio';
-        } else if (['.docx', '.pdf', '.pptx', '.xlsx', '.txt'].includes(ext)) {
-          type = 'doc';
-        }
-        return {
-          name: file,
-          url: `/api/content/home/${category}/${file}`,
-          type
-        };
-      });
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: "Failed to read directory" });
-  }
-});
-
-// GET /api/content/home/:category/:filename — serve the file
-router.get("/home/:category/:filename", (req, res) => {
-  const { category, filename } = req.params;
-  const filePath = path.join(process.cwd(), "../../content/home", category, filename);
-  
-  if (!fs.existsSync(filePath)) {
-    res.status(404).end();
-    return;
-  }
-  res.sendFile(filePath);
 });
 
 export default router;
