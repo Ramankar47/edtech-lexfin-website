@@ -1,62 +1,37 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { GlobalHeader } from "@/components/GlobalHeader";
+import { motion, AnimatePresence } from "framer-motion";
+
+const SLIDESHOW_IMAGES = [
+  "images/slideshow/4679196.jpg",
+  "images/slideshow/download (1).jpeg",
+  "images/slideshow/download.jpeg",
+  "images/slideshow/illustration-financial-concept_53876-20606.avif",
+  "images/slideshow/images.jpeg",
+];
 
 const POPULAR_COURSES = [
   {
     num: "01",
-    title: "Household Economics & Legal Awareness",
-    sub: "The Foundation",
-    duration: "5 hrs",
-    level: "Beginner",
-    icon: "🏠",
+    title: "Certificate in Legal Finance",
+    sub: "The comprehensive 6-module journey",
+    duration: "30 hrs",
+    level: "All Levels",
+    icon: "🎓",
     tag: "Most Popular",
+    link: "/courses"
   },
   {
     num: "02",
-    title: "Personal Finance & Compliance Skills",
-    sub: "Managing Your Finances",
-    duration: "5 hrs",
-    level: "Beginner",
-    icon: "💳",
-    tag: "",
-  },
-  {
-    num: "03",
-    title: "Goal Setting & Tax Efficiency",
-    sub: "Financial Planning",
-    duration: "5 hrs",
-    level: "Intermediate",
-    icon: "🎯",
-    tag: "",
-  },
-  {
-    num: "04",
-    title: "Insurance, Liability & Legal Safeguards",
-    sub: "Risk & Reward",
-    duration: "5 hrs",
-    level: "Intermediate",
-    icon: "🛡️",
-    tag: "",
-  },
-  {
-    num: "05",
-    title: "Markets, Regulation & Legal Rights",
-    sub: "The Financial Landscape",
-    duration: "5 hrs",
+    title: "Advanced Corporate Law",
+    sub: "Deep dive into financial disputes",
+    duration: "15 hrs",
     level: "Advanced",
-    icon: "📈",
-    tag: "Trending",
-  },
-  {
-    num: "06",
-    title: "The LexFin Strategy — Legal-Financial Integration",
-    sub: "Capstone Project",
-    duration: "10 hrs",
-    level: "Advanced",
-    icon: "🏆",
-    tag: "",
-  },
+    icon: "⚖️",
+    tag: "Coming Soon",
+    link: "#"
+  }
 ];
 
 const WHY_CHOOSE = [
@@ -69,6 +44,7 @@ const WHY_CHOOSE = [
     ),
     title: "Expert-Crafted Content",
     desc: "Learn from modules designed by practising lawyers, chartered accountants, and legal researchers at LexFin.",
+    category: "expertscraftedcontent",
   },
   {
     num: "2",
@@ -80,6 +56,7 @@ const WHY_CHOOSE = [
     ),
     title: "Interactive Learning",
     desc: "Gain knowledge through expert-led lessons, quizzes, puzzles, and real-world Indian case studies.",
+    category: "interactivelearning",
   },
   {
     num: "3",
@@ -124,6 +101,7 @@ const WHY_CHOOSE = [
     ),
     title: "University-Certified",
     desc: "Earn a joint certificate from SGT University, Faculty of Law, recognised across India's legal and financial sectors.",
+    category: "universitycertified",
   },
 ];
 
@@ -155,6 +133,46 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
+  // Slideshow and Modal states
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCategory, setModalCategory] = useState("");
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalContent, setModalContent] = useState<any[]>([]);
+  const [loadingContent, setLoadingContent] = useState(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActiveSlide(s => (s + 1) % SLIDESHOW_IMAGES.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const openContentModal = async (category: string, title: string) => {
+    if (!category) return;
+    setModalCategory(category);
+    setModalTitle(title);
+    setModalContent([]);
+    setModalOpen(true);
+    setLoadingContent(true);
+    try {
+      // For interactive learning, we might fetch a special quiz file
+      const url = category === 'interactivelearning' 
+        ? `/api/content/home/${category}/financial-literacy-quiz.json`
+        : `/api/content/home/${category}`;
+        
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setModalContent(data);
+      }
+    } catch {
+      // gracefully fail
+    } finally {
+      setLoadingContent(false);
+    }
+  };
+
   const prev = () =>
     setActiveTestimonial((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length);
   const next = () =>
@@ -171,6 +189,110 @@ export default function Landing() {
       }}
     >
       <GlobalHeader />
+
+      {/* MODAL FOR MEDIA CONTENT */}
+      <AnimatePresence>
+        {modalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 9999,
+              background: "rgba(0,0,0,0.7)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 24,
+            }}
+            onClick={() => setModalOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: "#fff",
+                borderRadius: 20,
+                width: "100%",
+                maxWidth: 600,
+                maxHeight: "80vh",
+                overflowY: "auto",
+                padding: "32px 24px",
+                boxShadow: "0 24px 64px rgba(0,0,0,0.3)",
+              }}
+            >
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
+                <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, margin: 0, color: "#1C1A28" }}>
+                  {modalTitle}
+                </h2>
+                <button
+                  onClick={() => setModalOpen(false)}
+                  style={{ background: "#F0EDE6", border: "none", borderRadius: "50%", width: 32, height: 32, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: "#5A576B" }}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {loadingContent ? (
+                <div style={{ padding: 40, textAlign: "center", color: "#5A576B" }}>Loading content...</div>
+              ) : modalContent.length === 0 ? (
+                <div style={{ padding: 40, textAlign: "center", color: "#9A97A8", background: "#F9F9F9", borderRadius: 12 }}>
+                  No media content published yet. Check back soon!
+                </div>
+              ) : modalCategory === 'interactivelearning' ? (
+                <QuizComponent questions={modalContent} />
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {modalContent.map((file, i) => (
+                    <div key={i} style={{ background: "#F9F9F9", border: "1px solid #EAE8FB", borderRadius: 12, padding: 16 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: file.type === "other" || file.type === "doc" ? 0 : 12 }}>
+                        <div style={{ fontSize: 24 }}>
+                          {file.type === "video" ? "🎬" : file.type === "audio" ? "🎧" : file.type === "doc" ? "📄" : "📁"}
+                        </div>
+                        <h4 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: "#1C1A28" }}>{file.name}</h4>
+                      </div>
+                      
+                      {file.type === "video" && (
+                        <video src={file.url} controls style={{ width: "100%", borderRadius: 8, background: "#000" }}></video>
+                      )}
+                      {file.type === "audio" && (
+                        <audio src={file.url} controls style={{ width: "100%" }}></audio>
+                      )}
+                      {(file.type === "other" || file.type === "doc") && (
+                        <div style={{ marginTop: 8 }}>
+                          <a 
+                            href={file.url} 
+                            target="_blank" 
+                            rel="noreferrer" 
+                            style={{ 
+                              display: "inline-flex", 
+                              alignItems: "center", 
+                              gap: 6, 
+                              color: "#5A4FD6", 
+                              textDecoration: "none", 
+                              fontWeight: 600,
+                              fontSize: 14,
+                              background: "#EAE8FB",
+                              padding: "6px 12px",
+                              borderRadius: 8
+                            }}
+                          >
+                            Download / View File ↓
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ─── HERO ─────────────────────────────────────────── */}
       <section
@@ -254,7 +376,7 @@ export default function Landing() {
 
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <button
-                onClick={() => setLocation("/module/1/learn")}
+                onClick={() => setLocation("/courses/1/path")}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -385,13 +507,37 @@ export default function Landing() {
       {/* ─── WHY CHOOSE LEXFIN ────────────────────────────── */}
       <section
         style={{
-          background: "#FAFAF7",
+          position: "relative",
           borderTop: "1px solid #E0DCCE",
           borderBottom: "1px solid #E0DCCE",
           padding: "80px 48px",
+          minHeight: 600,
         }}
       >
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSlide}
+            initial={{ opacity: 0, scale: 1.1, filter: "blur(12px)" }}
+            animate={{ opacity: 1, scale: 1.05, filter: "blur(6px)" }}
+            exit={{ opacity: 0, scale: 1, filter: "blur(12px)" }}
+            transition={{ 
+              opacity: { duration: 2 }, 
+              scale: { duration: 10, ease: "linear" },
+              filter: { duration: 2 }
+            }}
+            style={{
+              position: "absolute",
+              inset: 0,
+              zIndex: 0,
+              backgroundImage: `url("${import.meta.env.BASE_URL}${SLIDESHOW_IMAGES[activeSlide]}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+        </AnimatePresence>
+        <div style={{ position: "absolute", inset: 0, zIndex: 0, background: "rgba(255,255,255,0.45)", backdropFilter: "blur(4px)" }} />
+
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: 52 }}>
             <div
@@ -457,26 +603,30 @@ export default function Landing() {
             }}
           >
             {WHY_CHOOSE.map((item) => (
-              <div
+              <motion.div
                 key={item.num}
+                whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(90,79,214,.15)" }}
                 style={{
-                  background: "#F0EDE6",
-                  border: "1.5px solid #E0DCCE",
+                  background: "rgba(255, 255, 255, 0.8)",
+                  backdropFilter: "blur(8px)",
+                  border: "1.5px solid rgba(224, 220, 206, 0.8)",
                   borderRadius: 16,
                   padding: "28px 24px",
                   position: "relative",
-                  transition: "box-shadow .2s, transform .18s",
+                  transition: "background .2s",
+                  cursor: item.category ? "pointer" : "default",
                 }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.boxShadow =
-                    "0 8px 28px rgba(90,79,214,.1)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "translateY(0)";
+                onClick={() => {
+                  if (item.category) {
+                    openContentModal(item.category, item.title);
+                  }
                 }}
               >
+                {item.category && (
+                  <div style={{ position: "absolute", bottom: 20, right: 20, color: "#5A4FD6", fontWeight: 600, fontSize: 13 }}>
+                    View media →
+                  </div>
+                )}
                 {/* Number badge */}
                 <div
                   style={{
@@ -536,7 +686,7 @@ export default function Landing() {
                 >
                   {item.desc}
                 </p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -1068,7 +1218,7 @@ export default function Landing() {
             }}
           >
             <button
-              onClick={() => setLocation("/module/1/learn")}
+              onClick={() => setLocation("/courses/1/path")}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -1102,7 +1252,7 @@ export default function Landing() {
               </svg>
             </button>
             <button
-              onClick={() => setLocation("/learning-path")}
+              onClick={() => setLocation("/courses/1/path")}
               style={{
                 display: "flex",
                 alignItems: "center",

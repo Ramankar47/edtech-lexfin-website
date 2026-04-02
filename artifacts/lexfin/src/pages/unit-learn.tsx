@@ -1,88 +1,14 @@
 import { useState, useRef, useEffect } from "react";
-import { useLocation } from "wouter";
+import { useLocation, useRoute } from "wouter";
 import { getApiUrl } from "@/lib/utils";
 import { Check, X, Star, Zap, Trophy, BookOpen, Headphones, Video, ChevronRight, ArrowLeft } from "lucide-react";
 import { GlobalHeader } from "@/components/GlobalHeader";
 import confetti from "canvas-confetti";
+import { CapstoneGames } from "@/components/CapstoneGames";
+import { motion, AnimatePresence } from "framer-motion";
 
-// ─────────────────────────────────────────────
-//  MODULE 1 — THE FOUNDATION (hardcoded)
-// ─────────────────────────────────────────────
-const MODULE_1 = {
-  title: "The Foundation",
-  subtitle: "Household Economics & Legal Awareness",
-  section: "Module 1",
-  units: [
-    {
-      id: "u1",
-      title: "Advanced Economic Understanding",
-      content: [
-        { type: "heading", text: "Types of Income" },
-        { type: "para", text: "Income can be classified into three broad categories: Earned income is money received in exchange for work — salaries, wages, freelance fees. Portfolio income comes from investments — dividends, interest, capital gains. Passive income is generated with minimal active effort — rental income, royalties, or profits from a limited partnership." },
-        { type: "tip", text: "Under the Income Tax Act, 1961, all three types of income are taxable, but the rates and deductions vary significantly depending on the head of income." },
-        { type: "heading", text: "Real vs Nominal Income" },
-        { type: "para", text: "Nominal income is the raw number on your pay slip. Real income adjusts that figure for inflation — it reflects your actual purchasing power. For example, if your salary grew by 5% but inflation was 7%, your real income fell by 2%. This distinction matters legally in wage structures and government securities." },
-        { type: "heading", text: "Inflation Indexing in Taxation" },
-        { type: "para", text: "The government issues a Cost Inflation Index (CII) every year. When you sell a long-term capital asset (like property or gold), you apply the CII to its purchase price to calculate the indexed cost — reducing your taxable capital gain. This indexation benefit is a significant legal protection for investors." },
-        { type: "list", text: "CII is notified by CBDT every year|Long-term capital assets qualify after 24 months (immovable property) or 12–36 months (other assets)|Section 48 of the IT Act governs this calculation" },
-      ],
-    },
-    {
-      id: "u2",
-      title: "Legal Deepening",
-      content: [
-        { type: "heading", text: "Heads of Income under the IT Act, 1961" },
-        { type: "para", text: "The Income Tax Act organises income into five heads for computation purposes: (1) Salaries, (2) Income from House Property, (3) Profits & Gains from Business or Profession, (4) Capital Gains, and (5) Income from Other Sources. Each head has its own deductions, exemptions, and tax rates." },
-        { type: "tip", text: "Misclassifying income between heads is one of the most common errors that leads to tax notices and penalties. Always match the nature of income to the correct head." },
-        { type: "heading", text: "Residential Status and Global Income" },
-        { type: "para", text: "Under Indian tax law, your residential status determines how much of your income is taxable. A Resident and Ordinarily Resident (ROR) pays tax on global income — money earned in India AND abroad. A Non-Resident (NR) pays tax only on income earned or received in India. The status is determined by how many days you spent in India in a given financial year." },
-        { type: "heading", text: "Legal Compliance for First-Time Taxpayers" },
-        { type: "para", text: "When you earn your first salary, the law requires several immediate steps: Link your PAN (Permanent Account Number) with Aadhaar. Review your Annual Information Statement (AIS) and Tax Information Summary (TIS) on the Income Tax portal. File your ITR (Income Tax Return) if your total income exceeds the basic exemption limit — ₹3 lakh under the new tax regime." },
-        { type: "list", text: "PAN–Aadhaar linking is mandatory since July 2023|AIS shows all financial transactions reported by third parties|Non-filing or late filing attracts penalties under Section 234F" },
-      ],
-    },
-    {
-      id: "u3",
-      title: "Financial Inclusion & Law",
-      content: [
-        { type: "heading", text: "Banking Access under PMJDY" },
-        { type: "para", text: "The Pradhan Mantri Jan Dhan Yojana (PMJDY), launched in 2014, is India's flagship financial inclusion initiative. It enables every Indian to open a zero-balance bank account with a RuPay debit card, ₹2 lakh accidental insurance, ₹30,000 life insurance, and access to DBT (Direct Benefit Transfer) subsidies." },
-        { type: "tip", text: "As of 2024, over 53 crore Jan Dhan accounts have been opened. This scheme is the legal backbone of India's push to bring the unbanked population into the formal financial system." },
-        { type: "heading", text: "KYC/AML Norms under the RBI" },
-        { type: "para", text: "Know Your Customer (KYC) is a legal process mandated by the RBI under the Prevention of Money Laundering Act (PMLA), 2002. Banks must verify every customer's identity (Aadhaar/PAN/Passport) and address before opening an account. Anti-Money Laundering (AML) norms require banks to report suspicious transactions to the Financial Intelligence Unit (FIU-IND)." },
-        { type: "heading", text: "Legal Safeguards for Small Depositors" },
-        { type: "para", text: "The Deposit Insurance and Credit Guarantee Corporation (DICGC) — a fully owned subsidiary of the RBI — insures bank deposits. Every depositor's savings are protected up to ₹5 lakh (principal + interest) per bank. Even if a bank fails, you are guaranteed this amount under the DICGC Act, 1961." },
-        { type: "list", text: "₹5 lakh DICGC insurance per depositor per bank|Covers all deposit types: savings, FD, RD, current|Zero-balance accounts under PMJDY also get this protection" },
-      ],
-    },
-  ],
-  quizzes: [
-    {
-      title: "Unit 1 — Quiz",
-      xp: 200,
-      questions: [
-        { q: "If your salary grew by 4% but inflation was 6%, which of the following is TRUE?", opts: ["Your nominal income fell", "Your real income increased", "Your real income fell by 2%", "Your tax liability will decrease"], ans: 2, exp: "Real income = nominal income growth minus inflation. 4% − 6% = −2%, so your real purchasing power actually declined." },
-        { q: "A Resident and Ordinarily Resident (ROR) in India is taxed on:", opts: ["Only income earned in India", "Only income received in India", "Global income — both India and abroad", "Only salary income"], ans: 2, exp: "An ROR is taxed on global income under Indian law — this includes all income earned or received anywhere in the world." },
-        { q: "Under DICGC, how much deposit is insured per depositor per bank?", opts: ["₹1 lakh", "₹2 lakh", "₹5 lakh", "₹10 lakh"], ans: 2, exp: "The DICGC insures deposits up to ₹5 lakh (principal + interest) per depositor per bank as of 2021." },
-        { q: "Priya is an NRI working in Dubai. She receives rent from a flat in Mumbai and earns a salary in Dubai. Which income is taxable in India?", opts: ["Both salary and rent", "Only the Dubai salary", "Only the Mumbai rent", "Neither, as she is an NRI"], ans: 2, exp: "An NRI is taxed in India only on income earned or received in India. Mumbai rent qualifies; Dubai salary does not." },
-      ],
-    }
-  ],
-  puzzle: {
-    title: "Scenario Puzzle",
-    xp: 100,
-    scenario: "Ananya recently started her first job at a Mumbai firm, earning ₹6.5 lakh/year. She has a savings account in a small cooperative bank and holds ₹4.8 lakh in FDs there. Her father, who lives in London, transfers ₹2 lakh/month to her Indian account as rent from a property he owns in Pune. Ananya hasn't filed her ITR yet, and her PAN is still not linked to Aadhaar.",
-    question: "Which of the following BEST describes Ananya's immediate legal obligations and financial risk?",
-    opts: [
-      "She only needs to file ITR; her deposits are fully insured and PAN linking is optional.",
-      "She must link PAN–Aadhaar immediately (her PAN is inoperative otherwise), file ITR reporting both her salary AND the rent income (since it's received in India), and note that her FD of ₹4.8 lakh is insured by DICGC but only up to ₹5 lakh.",
-      "She should only report her salary; foreign transfers are exempt from Indian taxation.",
-      "She has no tax obligations since she is below the age of 30.",
-    ],
-    ans: 1,
-    exp: "Ananya has three key obligations: (1) PAN–Aadhaar linking is mandatory — an unlinked PAN is inoperative and bars her from filing returns. (2) The rent received in India from her father's Pune property is taxable in India regardless of who pays it, and must be declared under 'Income from House Property'. (3) Her ₹4.8 lakh FD is within the ₹5 lakh DICGC limit, so she is protected.",
-  },
-};
+import { Course, ModuleData, Unit, Quiz, Puzzle } from "@/data/types";
+import { getCourseById } from "@/data";
 
 // ─────────────────────────────────────────────
 //  Types
@@ -101,38 +27,64 @@ const PASS_THRESHOLD = 0.8;   // 80%
 // ─────────────────────────────────────────────
 export default function UnitLearnPage() {
   const [, setLocation] = useLocation();
+  const [match, params] = useRoute("/courses/:courseId/module/:moduleId/learn");
+
+  const courseId = params?.courseId || "1";
+  const moduleIdStr = params?.moduleId || "1";
+
+  const course = getCourseById(courseId);
+  const moduleData = course?.modules.find(m => m.id === Number(moduleIdStr));
+
   const [step, setStep] = useState<AppStep>({ kind: "unit", index: 0 });
   const [xpEarned, setXpEarned] = useState(0);
 
-  const totalSteps = MODULE_1.units.length + MODULE_1.quizzes.length + 2; // units + quizzes + puzzle + complete
+  if (!course || !moduleData) {
+    return (
+      <div style={{ textAlign: "center", padding: 48 }}>
+        <h2>Module not found</h2>
+        <button onClick={() => setLocation(`/courses/${courseId}/path`)}>Back to Learning Path</button>
+      </div>
+    );
+  }
+
+  const units = moduleData.unitsData || [];
+  const quizzes = moduleData.quizzesData || [];
+  const puzzle = moduleData.puzzleData;
+
+  const totalSteps = units.length + quizzes.length + (puzzle ? 2 : 1); // units + quizzes + puzzle + complete
   const stepIndex = (): number => {
     if (step.kind === "unit") return step.index;
-    if (step.kind === "quiz") return MODULE_1.units.length + step.index;
-    if (step.kind === "puzzle") return MODULE_1.units.length + MODULE_1.quizzes.length;
+    if (step.kind === "quiz") return units.length + step.index;
+    if (step.kind === "puzzle") return units.length + quizzes.length;
     return totalSteps - 1;
   };
-  const progress = Math.round((stepIndex() / (totalSteps - 1)) * 100);
+  const progress = Math.round((stepIndex() / (Math.max(1, totalSteps - 1))) * 100);
 
   const addXp = (xp: number) => setXpEarned(v => v + xp);
 
   const goNext = () => {
     if (step.kind === "unit") {
-      if (step.index + 1 < MODULE_1.units.length) setStep({ kind: "unit", index: step.index + 1 });
+      if (step.index + 1 < units.length) setStep({ kind: "unit", index: step.index + 1 });
       else setStep({ kind: "quiz", index: 0 });
     } else if (step.kind === "quiz") {
-      if (step.index + 1 < MODULE_1.quizzes.length) setStep({ kind: "quiz", index: step.index + 1 });
-      else setStep({ kind: "puzzle" });
+      if (step.index + 1 < quizzes.length) setStep({ kind: "quiz", index: step.index + 1 });
+      else if (puzzle) setStep({ kind: "puzzle" });
+      else {
+        setStep({ kind: "complete" });
+        setTimeout(() => confetti({ particleCount: 160, spread: 100, origin: { y: 0.45 } }), 350);
+      }
     } else if (step.kind === "puzzle") {
       setStep({ kind: "complete" });
       setTimeout(() => confetti({ particleCount: 160, spread: 100, origin: { y: 0.45 } }), 350);
     }
   };
 
-  const passed = xpEarned >= MAX_XP * PASS_THRESHOLD; // ≥ 240 of 300
+  const currentMaxXp = moduleData.isGame ? 500 : (quizzes.reduce((acc, q) => acc + (q.xp || 0), 0) + (puzzle?.xp || 0));
+  const passed = xpEarned >= currentMaxXp * PASS_THRESHOLD;
 
   const stepLabel = (): string => {
-    if (step.kind === "unit") return `Unit ${step.index + 1}: ${MODULE_1.units[step.index].title}`;
-    if (step.kind === "quiz") return MODULE_1.quizzes[step.index].title;
+    if (step.kind === "unit") return `Unit ${step.index + 1}: ${units[step.index]?.title || ""}`;
+    if (step.kind === "quiz") return quizzes[step.index]?.title || "Quiz";
     if (step.kind === "puzzle") return "Practical Puzzle";
     return "Complete!";
   };
@@ -145,7 +97,7 @@ export default function UnitLearnPage() {
       {/* Progress sub-header */}
       <div style={{ position: "sticky", top: 64, zIndex: 40, background: "#fff", borderBottom: "2px solid #E0DCCE", boxShadow: "0 1px 6px rgba(0,0,0,.06)" }}>
         <div style={{ maxWidth: 960, margin: "0 auto", padding: "12px 24px", display: "flex", alignItems: "center", gap: 14 }}>
-          <button onClick={() => setLocation("/learning-path")} style={{ background: "none", border: "none", cursor: "pointer", padding: 6, borderRadius: 8, display: "flex", alignItems: "center", color: "#9A97A8" }}>
+          <button onClick={() => setLocation(`/courses/${courseId}/path`)} style={{ background: "none", border: "none", cursor: "pointer", padding: 6, borderRadius: 8, display: "flex", alignItems: "center", color: "#9A97A8" }}>
             <ArrowLeft size={18} />
           </button>
           <div style={{ flex: 1 }}>
@@ -157,7 +109,12 @@ export default function UnitLearnPage() {
               </div>
             </div>
             <div style={{ height: 6, background: "#ECEAF4", borderRadius: 3, overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${progress}%`, background: "#5A4FD6", borderRadius: 3, transition: "width .5s cubic-bezier(.4,0,.2,1)" }} />
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                style={{ height: "100%", background: "#5A4FD6", borderRadius: 3 }} 
+              />
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: 3 }}>
               <span style={{ fontSize: 10, color: "#9A97A8" }}>Step {stepIndex() + 1} of {totalSteps}</span>
@@ -169,41 +126,65 @@ export default function UnitLearnPage() {
 
       {/* Main content */}
       <main style={{ flex: 1, maxWidth: 960, margin: "0 auto", width: "100%", padding: "32px 24px 80px" }}>
-        {step.kind === "unit" && (
-          <UnitView
-            unit={MODULE_1.units[step.index]}
-            unitNumber={step.index + 1}
-            totalUnits={MODULE_1.units.length}
-            moduleTitle={MODULE_1.title}
-            onNext={goNext}
-          />
-        )}
-        {step.kind === "quiz" && (
-          <QuizView
-            quiz={MODULE_1.quizzes[step.index]}
-            quizNumber={step.index + 1}
-            onAddXp={addXp}
-            onComplete={() => goNext()}
-          />
-        )}
-        {step.kind === "puzzle" && (
-          <PuzzleView
-            puzzle={MODULE_1.puzzle}
-            onAddXp={addXp}
-            onComplete={() => goNext()}
-          />
-        )}
-        {step.kind === "complete" && (
-          <CompleteView
-            xpEarned={xpEarned}
-            maxXp={MAX_XP}
+        {step.kind === "complete" ? (
+          <CompleteView 
+            course={course}
+            moduleData={moduleData} 
+            xpEarned={xpEarned} 
+            maxXp={currentMaxXp}
             passed={passed}
-            onRetry={() => { setStep({ kind: "quiz", index: 0 }); setXpEarned(0); }}
-            onNext={() => {
-              if (passed) localStorage.setItem("mod1_passed", "true");
-              setLocation("/learning-path");
+            onRetry={() => {
+               if (moduleData.isGame) {
+                 window.location.reload();
+               } else {
+                 setStep({ kind: "unit", index: 0 });
+                 setXpEarned(0);
+               }
             }}
+            onNext={() => setLocation(`/courses/${courseId}/path`)}
           />
+        ) : moduleData.isGame ? (
+          <CapstoneGames 
+            onComplete={(xp) => {
+              setXpEarned(xp);
+              setStep({ kind: "complete" });
+              // Simple confetti trigger
+              import('canvas-confetti').then(confetti => {
+                confetti.default({ particleCount: 160, spread: 100, origin: { y: 0.45 } });
+              });
+            }} 
+          />
+        ) : (
+          <>
+            {step.kind === "unit" && units.length > 0 && (
+              <UnitView
+                courseId={courseId}
+                moduleId={moduleIdStr}
+                unit={units[step.index]}
+                unitNumber={step.index + 1}
+                totalUnits={units.length}
+                moduleTitle={moduleData.name}
+                unitsData={units}
+                onNext={goNext}
+              />
+            )}
+            {step.kind === "quiz" && quizzes.length > 0 && (
+              <QuizView
+                moduleName={moduleData.name}
+                quiz={quizzes[step.index]}
+                quizNumber={step.index + 1}
+                onAddXp={addXp}
+                onComplete={() => goNext()}
+              />
+            )}
+            {step.kind === "puzzle" && puzzle && (
+              <PuzzleView
+                puzzle={puzzle}
+                onAddXp={addXp}
+                onComplete={() => goNext()}
+              />
+            )}
+          </>
         )}
       </main>
     </div>
@@ -213,11 +194,14 @@ export default function UnitLearnPage() {
 // ─────────────────────────────────────────────
 //  Unit View (text + audio + video)
 // ─────────────────────────────────────────────
-function UnitView({ unit, unitNumber, totalUnits, moduleTitle, onNext }: {
-  unit: typeof MODULE_1.units[0];
+function UnitView({ courseId, moduleId, unit, unitNumber, totalUnits, moduleTitle, unitsData, onNext }: {
+  courseId: string;
+  moduleId: string;
+  unit: Unit;
   unitNumber: number;
   totalUnits: number;
   moduleTitle: string;
+  unitsData: Unit[];
   onNext: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
@@ -280,8 +264,8 @@ function UnitView({ unit, unitNumber, totalUnits, moduleTitle, onNext }: {
 
       {/* Right: media panels */}
       <div style={{ flex: "0 1 280px", display: "flex", flexDirection: "column", gap: 16 }}>
-        <AudioPanel src={getApiUrl(`/api/content/Course1/Module1/Unit${unitNumber}/Audios/media`)} />
-        <VideoPanel src={getApiUrl(`/api/content/Course1/Module1/Unit${unitNumber}/Videos/media`)} />
+        <AudioPanel src={getApiUrl(`/api/content/Course${courseId}/Module${moduleId}/Unit${unitNumber}/Audios/media`)} />
+        <VideoPanel src={getApiUrl(`/api/content/Course${courseId}/Module${moduleId}/Unit${unitNumber}/Videos/media`)} />
         <div style={{ background: "#FAFAF7", border: "1.5px solid #E0DCCE", borderRadius: 14, padding: "18px" }}>
           <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".07em", color: "#9A97A8", marginBottom: 10 }}>Your Progress</div>
           {Array.from({ length: totalUnits }).map((_, i) => (
@@ -289,7 +273,7 @@ function UnitView({ unit, unitNumber, totalUnits, moduleTitle, onNext }: {
               <div style={{ width: 22, height: 22, borderRadius: "50%", background: i < unitNumber - 1 ? "#5A4FD6" : i === unitNumber - 1 ? "#EAE8FB" : "#F0EDE6", border: `2px solid ${i < unitNumber - 1 ? "#3D34A5" : i === unitNumber - 1 ? "#5A4FD6" : "#E0DCCE"}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 {i < unitNumber - 1 ? <Check size={12} color="#fff" strokeWidth={3} /> : <span style={{ fontSize: 9, fontWeight: 700, color: i === unitNumber - 1 ? "#5A4FD6" : "#C8C5D8" }}>{i + 1}</span>}
               </div>
-              <span style={{ fontSize: 12, color: i === unitNumber - 1 ? "#1C1A28" : "#9A97A8", fontWeight: i === unitNumber - 1 ? 600 : 400 }}>Unit {i + 1}: {MODULE_1.units[i].title.split(" ").slice(0, 2).join(" ")}…</span>
+              <span style={{ fontSize: 12, color: i === unitNumber - 1 ? "#1C1A28" : "#9A97A8", fontWeight: i === unitNumber - 1 ? 600 : 400 }}>Unit {i + 1}: {unitsData[i]?.title.split(" ").slice(0, 2).join(" ")}…</span>
             </div>
           ))}
         </div>
@@ -382,8 +366,9 @@ function VideoPanel({ src }: { src: string }) {
 // ─────────────────────────────────────────────
 //  Quiz View
 // ─────────────────────────────────────────────
-function QuizView({ quiz, quizNumber, onAddXp, onComplete }: {
-  quiz: typeof MODULE_1.quizzes[0];
+function QuizView({ moduleName, quiz, quizNumber, onAddXp, onComplete }: {
+  moduleName: string;
+  quiz: Quiz;
   quizNumber: number;
   onAddXp: (xp: number) => void;
   onComplete: () => void;
@@ -420,7 +405,7 @@ function QuizView({ quiz, quizNumber, onAddXp, onComplete }: {
       {/* Quiz card */}
       <div style={{ background: "#5A4FD6", borderRadius: 16, padding: "22px 28px", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,.6)", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 4 }}>Module 1 • {MODULE_1.title}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "rgba(255,255,255,.6)", textTransform: "uppercase", letterSpacing: ".1em", marginBottom: 4 }}>{moduleName}</div>
           <div style={{ fontSize: 17, fontWeight: 600, color: "#fff" }}>{quiz.title}</div>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
@@ -453,24 +438,31 @@ function QuizView({ quiz, quizNumber, onAddXp, onComplete }: {
           const showWrong = revealed && isSelected && !isCorrect;
 
           return (
-            <button
+            <motion.button
               key={i}
               onClick={() => handleSelect(i)}
               disabled={revealed}
+              whileHover={!revealed ? { scale: 1.015, x: 2 } : {}}
+              whileTap={!revealed ? { scale: 0.985 } : {}}
+              initial={false}
+              animate={{ 
+                borderColor: showCorrect ? "#059669" : showWrong ? "#DC2626" : isSelected ? "#5A4FD6" : "#E0DCCE",
+                backgroundColor: showCorrect ? "#ECFDF5" : showWrong ? "#FEF2F2" : isSelected ? "#EAE8FB" : "#fff",
+                y: revealed ? 0 : 0
+              }}
               style={{
                 textAlign: "left", padding: "14px 18px", borderRadius: 12, fontSize: 14, fontWeight: 500, cursor: revealed ? "default" : "pointer",
-                border: `2px solid ${showCorrect ? "#059669" : showWrong ? "#DC2626" : isSelected ? "#5A4FD6" : "#E0DCCE"}`,
-                background: showCorrect ? "#ECFDF5" : showWrong ? "#FEF2F2" : isSelected ? "#EAE8FB" : "#fff",
                 color: showCorrect ? "#047857" : showWrong ? "#B91C1C" : "#1C1A28",
-                display: "flex", alignItems: "center", gap: 14, transition: "all .18s",
+                display: "flex", alignItems: "center", gap: 14, 
                 fontFamily: "'DM Sans', sans-serif",
+                boxShadow: isSelected ? "0 4px 12px rgba(90, 79, 214, 0.12)" : "none"
               }}
             >
               <div style={{ width: 28, height: 28, borderRadius: "50%", background: showCorrect ? "#059669" : showWrong ? "#DC2626" : "#ECEAF4", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 {showCorrect ? <Check size={14} color="#fff" strokeWidth={3} /> : showWrong ? <X size={14} color="#fff" strokeWidth={3} /> : <span style={{ fontSize: 11, fontWeight: 700, color: "#9A97A8" }}>{opts[i]}</span>}
               </div>
               {opt}
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -501,7 +493,7 @@ function QuizView({ quiz, quizNumber, onAddXp, onComplete }: {
 //  Puzzle View
 // ─────────────────────────────────────────────
 function PuzzleView({ puzzle, onAddXp, onComplete }: {
-  puzzle: typeof MODULE_1.puzzle;
+  puzzle: Puzzle;
   onAddXp: (xp: number) => void;
   onComplete: () => void;
 }) {
@@ -603,75 +595,135 @@ function PuzzleView({ puzzle, onAddXp, onComplete }: {
 // ─────────────────────────────────────────────
 //  Complete View
 // ─────────────────────────────────────────────
-function CompleteView({ xpEarned, maxXp, passed, onRetry, onNext }: {
+function CompleteView({ course, moduleData, xpEarned, maxXp, passed, onRetry, onNext }: {
+  course: Course;
+  moduleData: ModuleData;
   xpEarned: number;
   maxXp: number;
   passed: boolean;
   onRetry: () => void;
   onNext: () => void;
 }) {
+  const [, setLocation] = useLocation();
   const pct = Math.round((xpEarned / maxXp) * 100);
 
   return (
-    <div style={{ maxWidth: 620, margin: "0 auto" }}>
-      <div style={{ background: "#fff", border: "1.5px solid #E0DCCE", borderRadius: 20, padding: "48px 36px", textAlign: "center" }}>
-        <div style={{ fontSize: 52, marginBottom: 16 }}>{passed ? "🏆" : "💪"}</div>
-        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 28, fontWeight: 700, color: "#1C1A28", marginBottom: 8 }}>
-          {passed ? "Module Complete!" : "Almost There!"}
-        </h2>
-        <p style={{ fontSize: 15, color: "#9A97A8", marginBottom: 28, lineHeight: 1.6 }}>
-          {passed
-            ? "Outstanding work! You've mastered The Foundation. Module 2 is now unlocked."
-            : `You scored ${pct}%. You need at least 80% to unlock the next module. Review the units and try again!`}
-        </p>
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      style={{ maxWidth: 640, margin: "0 auto", textAlign: "center", background: "#fff", border: "1.5px solid #E0DCCE", borderRadius: 24, padding: "48px 32px", boxShadow: "0 12px 40px rgba(0,0,0,0.06)" }}
+    >
+      <motion.div
+        initial={{ scale: 0, rotate: -20 }}
+        animate={{ scale: 1, rotate: 0 }}
+        transition={{ type: "spring", damping: 12, stiffness: 200, delay: 0.2 }}
+        style={{ fontSize: 72, marginBottom: 16, display: "inline-block" }}
+      >
+        {passed ? "🏆" : "💪"}
+      </motion.div>
 
-        {/* Score card */}
-        <div style={{ background: passed ? "#ECFDF5" : "#FEF9EC", border: `1.5px solid ${passed ? "#A7F3D0" : "#F3D88A"}`, borderRadius: 16, padding: "24px", marginBottom: 28 }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 12 }}>
-            <Zap size={24} color={passed ? "#059669" : "#F59E0B"} fill={passed ? "#059669" : "#F59E0B"} />
-            <span style={{ fontSize: 36, fontWeight: 800, color: passed ? "#047857" : "#B45309" }}>{xpEarned}</span>
-            <span style={{ fontSize: 18, color: "#9A97A8", fontWeight: 600 }}>/ {maxXp} XP</span>
-          </div>
-          {/* XP bar */}
-          <div style={{ height: 10, background: "#E0DCCE", borderRadius: 5, overflow: "hidden", marginBottom: 8 }}>
-            <div style={{ height: "100%", width: `${pct}%`, background: passed ? "#059669" : "#F59E0B", borderRadius: 5, transition: "width 1s ease" }} />
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-            <span style={{ color: "#9A97A8" }}>Your score: {pct}%</span>
-            <span style={{ color: "#9A97A8" }}>Pass: 80%</span>
-          </div>
-          {/* Score breakdown */}
-          <div style={{ marginTop: 16, display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-            {[["Quiz", `Max 200 XP`], ["Puzzle", "Max 100 XP"]].map(([l, v]) => (
-              <div key={l} style={{ fontSize: 11, color: "#9A97A8", background: "rgba(0,0,0,.04)", borderRadius: 100, padding: "4px 12px" }}>{l}: {v}</div>
-            ))}
-          </div>
+      <motion.h1 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        style={{ fontFamily: "'Fraunces', serif", fontSize: 36, fontWeight: 700, color: "#1C1A28", marginBottom: 12 }}
+      >
+        {passed ? "Module Complete!" : "Almost There!"}
+      </motion.h1>
+      
+      <motion.p 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        style={{ fontSize: 16, color: "#9A97A8", lineHeight: 1.6, marginBottom: 32, maxWidth: 440, margin: "0 auto 32px" }}
+      >
+        {passed 
+          ? `Incredible job! You've mastered ${moduleData.name} with ${pct}% academy accuracy. You're now ready for the next challenge.`
+          : `You scored ${pct}%. High academic standards require at least 80% to unlock the next module. Let's try once more!`}
+      </motion.p>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        style={{ background: "#FEF9EC", border: "1px solid #F3D88A", borderRadius: 20, padding: "32px 24px", marginBottom: 32, position: "relative", overflow: "hidden" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, marginBottom: 16 }}>
+          <Zap size={28} color="#F59E0B" fill="#F59E0B" />
+          <span style={{ fontSize: 42, fontWeight: 800, color: "#B45309", fontFamily: "'DM Sans', sans-serif" }}>
+            <Counter value={xpEarned} /> <span style={{ fontSize: 20, opacity: 0.6 }}>/ {maxXp} XP</span>
+          </span>
         </div>
 
-        {passed ? (
-          <button
-            onClick={onNext}
-            style={{ width: "100%", padding: "16px 24px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
-          >
-            Continue to Module 2 →
-          </button>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <button
-              onClick={onRetry}
-              style={{ width: "100%", padding: "16px 24px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 12, fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
-            >
-              Retry Quizzes & Puzzle →
-            </button>
-            <button
-              onClick={onNext}
-              style={{ width: "100%", padding: "14px 24px", background: "transparent", color: "#9A97A8", border: "1.5px solid #E0DCCE", borderRadius: 12, fontSize: 14, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}
-            >
-              Back to Learning Path
-            </button>
-          </div>
-        )}
+        <div style={{ height: 12, background: "rgba(180, 83, 9, 0.1)", borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
+          <motion.div 
+            initial={{ width: 0 }}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 1.2, delay: 0.8, ease: "circOut" }}
+            style={{ height: "100%", background: "#F59E0B", borderRadius: 6 }}
+          />
+        </div>
+        
+        <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, fontWeight: 700, color: "#B45309", opacity: 0.8, textTransform: "uppercase", letterSpacing: "0.05em" }}>
+          <span>Your score: {pct}%</span>
+          <span>Target: 80%</span>
+        </div>
+      </motion.div>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          onClick={() => {
+            if (passed) localStorage.setItem(`Course${course.id}_mod${moduleData.id}_passed`, "true");
+            passed ? onNext() : onRetry();
+          }}
+          style={{ width: "100%", padding: "18px 24px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 14, fontSize: 16, fontWeight: 700, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", boxShadow: "0 4px 14px rgba(90, 79, 214, 0.3)" }}
+        >
+          {passed ? "Continue to Next Module →" : "Retry Module →"}
+        </motion.button>
+        <button
+          onClick={() => setLocation("/courses")}
+          style={{ width: "100%", padding: "16px 24px", background: "transparent", color: "#9A97A8", border: "1.5px solid #E0DCCE", borderRadius: 14, fontSize: 14, fontWeight: 600, cursor: "pointer" }}
+        >
+          Back to All Courses
+        </button>
       </div>
-    </div>
+    </motion.div>
   );
+}
+
+function Counter({ value }: { value: number }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    // [x] Expand `FALLBACK_CAPSTONES` with 40 unique scenarios (10 per type)
+    // [x] Implement stage-based level progression in `CapstoneGames.tsx`
+    // [x] Add "Back to Courses" navigation to module completion and certificate
+    // [ ] Redesign E-learning tab in `courses.tsx` with two Course Cards
+    if (value === 0) return;
+    let start = 0;
+    const duration = 1500; // 1.5 seconds
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Ease out quad
+      const easedProgress = progress * (2 - progress);
+      
+      const currentCount = Math.floor(easedProgress * value);
+      setCount(currentCount);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [value]);
+
+  return <>{count}</>;
 }

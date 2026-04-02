@@ -49,6 +49,7 @@ export default defineConfig({
     port,
     host: "0.0.0.0",
     allowedHosts: true,
+    open: true,
     fs: {
       strict: true,
       deny: ["**/.*"],

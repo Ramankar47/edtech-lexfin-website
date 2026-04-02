@@ -46,6 +46,7 @@ router.get("/stats", async (req, res) => {
     const xpProgress = user.totalXp - (level - 1) * 100;
 
     res.json({
+      userName: user.username,
       totalXp: user.totalXp,
       level,
       streak: user.streak,

@@ -39,7 +39,7 @@ function readSheet<T = Record<string, any>>(
     const wb = XLSX.readFile(filePath);
     const ws = wb.Sheets[sheetName];
     if (!ws) return [];
-    return XLSX.utils.sheet_to_json<T>(ws);
+    return XLSX.utils.sheet_to_json(ws) as T[];
   } catch (err) {
     console.error(`XLSX read error [${sheetName}] ${filePath}:`, err);
     return [];
@@ -223,6 +223,54 @@ router.get("/:moduleId/video", (req, res) => {
     return;
   }
   res.sendFile(p);
+});
+
+// GET /api/content/home/:category — list files in the category folder
+router.get("/home/:category", (req, res) => {
+  const category = req.params.category;
+  const dirPath = path.join(process.cwd(), "../../content/home", category);
+  
+  if (!fs.existsSync(dirPath)) {
+    res.json([]);
+    return;
+  }
+  
+  try {
+    const files = fs.readdirSync(dirPath);
+    const result = files
+      .filter(f => !f.startsWith('.'))
+      .map(file => {
+        const ext = path.extname(file).toLowerCase();
+        let type = 'other';
+        if (['.mp4', '.webm', '.ogg', '.m4v'].includes(ext)) {
+          type = 'video';
+        } else if (['.mp3', '.wav', '.m4a', '.aac'].includes(ext)) {
+          type = 'audio';
+        } else if (['.docx', '.pdf', '.pptx', '.xlsx', '.txt'].includes(ext)) {
+          type = 'doc';
+        }
+        return {
+          name: file,
+          url: `/api/content/home/${category}/${file}`,
+          type
+        };
+      });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to read directory" });
+  }
+});
+
+// GET /api/content/home/:category/:filename — serve the file
+router.get("/home/:category/:filename", (req, res) => {
+  const { category, filename } = req.params;
+  const filePath = path.join(process.cwd(), "../../content/home", category, filename);
+  
+  if (!fs.existsSync(filePath)) {
+    res.status(404).end();
+    return;
+  }
+  res.sendFile(filePath);
 });
 
 export default router;

@@ -1,79 +1,58 @@
-import { useState } from "react";
-import { useLocation } from "wouter";
+import { useState, useEffect } from "react";
+import { useLocation, useRoute } from "wouter";
 import { GlobalHeader } from "@/components/GlobalHeader";
+import { getCourseById } from "@/data";
+import { ModuleData } from "@/data/types";
 
 export default function LearningPathPage() {
   const [, setLocation] = useLocation();
+  const [match, params] = useRoute("/courses/:courseId/path");
+  const courseId = params?.courseId || "1";
+  
+  const course = getCourseById(courseId);
+
   const [openPanel, setOpenPanel] = useState<number | null>(1);
   const [lockVisible, setLockVisible] = useState<number | null>(null);
 
-  const isMod1Passed = typeof window !== "undefined" && localStorage.getItem("mod1_passed") === "true";
+  useEffect(() => {
+    // scroll to top on mount
+    window.scrollTo(0, 0);
+  }, []);
 
-  const MODULES = [
-    {
-      id: 1, emoji: "🏠", unit: "Module 1", name: "The Foundation",
-      sub: "Household Economics & Legal Awareness", hrs: "~5 hrs", sections: 4,
-      status: "active" as const,
-      topics: [
-        { head: "Advanced Economic Understanding", items: ["Types of income: earned, portfolio, and passive income", "Real vs nominal income — legal implications in taxation", "Inflation indexing in taxation and government securities"] },
-        { head: "Legal Deepening", items: ["Heads of income under the Income Tax Act, 1961", "Residential status and global income taxation", "Legal compliance for first-time taxpayers (PAN, AIS/TIS)"] },
-        { head: "Financial Inclusion & Law", items: ["Banking access under PMJDY; KYC/AML norms under RBI", "Legal safeguards for small depositors and zero-balance accounts"] },
-        { head: "Practical Component", items: ["Case study: Misclassification of income leading to tax penalties", "Activity: Identify taxable vs exempt income scenarios"] },
-      ],
-      unlockMsg: "",
-    },
-    {
-      id: 2, emoji: "💰", unit: "Module 2", name: "Managing Your Finances",
-      sub: "Personal Finance & Compliance Skills", hrs: "~5 hrs", sections: 5,
-      status: isMod1Passed ? ("active" as const) : ("locked" as const),
-      topics: [
-        { head: "Advanced Budgeting & Cash Flow", items: ["Cash flow statements for individuals", "Behavioral finance biases affecting spending", "Digital financial tools and UPI ecosystem compliance"] },
-        { head: "Debt & Legal Obligations", items: ["Loan documentation: sanction letters, amortization schedules", "Legal consequences of default (SARFAESI Act overview)", "Credit score (CIBIL) and legal implications of poor credit history"] },
-        { head: "Regulatory Compliance", items: ["RBI guidelines on digital lending and recovery agents", "Fair Practices Code and grievance redressal"] },
-        { head: "Dispute Resolution", items: ["Filing complaints against banks/NBFCs through Ombudsman Scheme", "Legal recourse in harassment by recovery agents"] },
-        { head: "Practical Component", items: ["Draft a personal monthly budget with legal compliance checks", "Analyze a sample loan agreement"] },
-      ],
-      unlockMsg: "Complete Module 1 to unlock this module.",
-    },
-    {
-      id: 3, emoji: "🎯", unit: "Module 3", name: "Financial Planning",
-      sub: "Goal Setting & Tax Efficiency", hrs: "~5 hrs", sections: 4,
-      status: "locked" as const,
-      topics: [],
-      unlockMsg: "Complete Module 2 to unlock this module.",
-    },
-    {
-      id: 4, emoji: "🛡️", unit: "Module 4", name: "Risk & Reward",
-      sub: "Insurance, Liability & Legal Safeguards", hrs: "~5 hrs", sections: 3,
-      status: "locked" as const,
-      topics: [],
-      unlockMsg: "Complete Module 3 to unlock this module.",
-    },
-    {
-      id: 5, emoji: "📈", unit: "Module 5", name: "The Financial Landscape",
-      sub: "Markets, Regulation & Legal Rights", hrs: "~5 hrs", sections: 5,
-      status: "locked" as const,
-      topics: [],
-      unlockMsg: "Complete Module 4 to unlock this module.",
-    },
-    {
-      id: 6, emoji: "🏆", unit: "Module 6", name: "Capstone Project",
-      sub: "The LexFin Strategy", hrs: "~10 hrs", sections: 3,
-      status: "locked" as const,
-      topics: [],
-      unlockMsg: "Complete all previous modules to access the Capstone Project.",
-    },
-  ];
+  if (!match || !course) {
+    return (
+      <div style={{ padding: "48px", textAlign: "center" }}>
+        <h2>Course Not Found</h2>
+        <button onClick={() => setLocation("/courses")}>Back to Courses</button>
+      </div>
+    );
+  }
 
-  type ModuleType = typeof MODULES[0];
+  // Determine active status for each module
+  const checkStatus = (modId: number) => {
+    if (modId === 1) return "active";
+    // Check if the PREVIOUS module is passed
+    const prevModId = modId - 1;
+    let passed = false;
+    if (typeof window !== "undefined") {
+      passed = localStorage.getItem(`Course${course.id}_mod${prevModId}_passed`) === "true";
+      if (!passed && course.id === "1") {
+         // fallback for legacy keys
+         passed = localStorage.getItem(`mod${prevModId}_passed`) === "true";
+      }
+    }
+    return passed ? "active" : "locked";
+  };
 
-  const handleNodeClick = (mod: ModuleType) => {
-    if (mod.status === "active") {
+  const handleNodeClick = (mod: ModuleData, status: string) => {
+    if (status === "active") {
       setOpenPanel(openPanel === mod.id ? null : mod.id);
     } else {
       setLockVisible(lockVisible === mod.id ? null : mod.id);
     }
   };
+
+  let activeModulesCount = 1;
 
   return (
     <div style={{ minHeight: "100vh", background: "#F0EDE6", fontFamily: "'DM Sans', sans-serif", color: "#1C1A28" }}>
@@ -85,13 +64,13 @@ export default function LearningPathPage() {
           Your <em style={{ fontStyle: "italic", fontWeight: 300, color: "#5A4FD6" }}>Learning Path</em>
         </h1>
         <p style={{ fontSize: 15, color: "#5A576B", lineHeight: 1.65, maxWidth: 420, margin: "0 auto 24px" }}>
-          Complete each module to unlock the next. Master Indian Financial Laws step by step.
+          Complete each module to unlock the next. Multi-disciplinary mastery step by step.
         </p>
         <div style={{ display: "inline-flex", alignItems: "center", gap: 10, background: "#FAFAF7", border: "1px solid #E0DCCE", borderRadius: 100, padding: "8px 20px" }}>
           <div style={{ width: 160, height: 6, background: "#E0DCCE", borderRadius: 3, overflow: "hidden" }}>
             <div style={{ height: "100%", width: "16.6%", background: "#5A4FD6", borderRadius: 3 }} />
           </div>
-          <span style={{ fontSize: 12, color: "#5A576B", fontWeight: 500 }}>1 of 6 modules</span>
+          <span style={{ fontSize: 12, color: "#5A576B", fontWeight: 500 }}>Active Modules</span>
         </div>
       </section>
 
@@ -103,15 +82,17 @@ export default function LearningPathPage() {
           <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#fff" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", letterSpacing: ".08em", color: "rgba(255,255,255,.65)", marginBottom: 2 }}>Course</div>
-            <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>Integrated Financial & Legal Literacy</div>
+            <div style={{ fontSize: 15, fontWeight: 600, color: "#fff" }}>{course.title}</div>
           </div>
-          <div style={{ fontSize: 11, color: "rgba(255,255,255,.5)" }}>6 Modules · 30 hrs</div>
+          <div style={{ fontSize: 11, color: "rgba(255,255,255,.5)" }}>{course.modules.length} Modules · {course.learningHours}</div>
         </div>
 
         {/* MODULES */}
-        {MODULES.map((mod, idx) => {
-          const isActive = mod.status === "active";
-          const isLocked = mod.status === "locked";
+        {course.modules.map((mod, idx) => {
+          const status = checkStatus(mod.id);
+          const isActive = status === "active";
+          if (isActive) activeModulesCount++;
+          const isLocked = status === "locked";
           const isPanelOpen = openPanel === mod.id;
           const isLockShown = lockVisible === mod.id;
 
@@ -133,7 +114,7 @@ export default function LearningPathPage() {
               {/* MODULE NODE */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", position: "relative", zIndex: 2 }}>
                 <div
-                  onClick={() => handleNodeClick(mod)}
+                  onClick={() => handleNodeClick(mod, status)}
                   style={{
                     width: 80, height: 80, borderRadius: "50%",
                     display: "flex", alignItems: "center", justifyContent: "center",
@@ -178,14 +159,14 @@ export default function LearningPathPage() {
                         </div>
                       </div>
                       <button
-                        onClick={() => setLocation(`/module/${mod.id}/learn`)}
+                        onClick={() => setLocation(`/courses/${course.id}/module/${mod.id}/learn`)}
                         style={{ padding: "8px 18px", background: "#5A4FD6", color: "#fff", border: "none", borderRadius: 8, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap" }}
                       >
                         Start Module →
                       </button>
                     </div>
                     <div style={{ padding: "16px 22px" }}>
-                      {mod.topics.map(sec => (
+                      {mod.topics?.map(sec => (
                         <div key={sec.head} style={{ marginBottom: 14 }}>
                           <div style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".07em", color: "#9A97A8", marginBottom: 6 }}>{sec.head}</div>
                           {sec.items.map(item => (
@@ -199,7 +180,7 @@ export default function LearningPathPage() {
                     </div>
                     <div style={{ padding: "14px 22px", borderTop: "1px solid #E0DCCE", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                       <div style={{ display: "flex", gap: 16 }}>
-                        {[["⏱", mod.hrs], ["📖", `${mod.sections} sections`], ["✅", "1 case study"]].map(([icon, label]) => (
+                        {[["⏱", mod.hrs], ["📖", `${mod.sections} sections`]].map(([icon, label]) => (
                           <div key={label as string} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12, color: "#9A97A8" }}>{icon} {label}</div>
                         ))}
                       </div>
@@ -218,8 +199,7 @@ export default function LearningPathPage() {
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, marginTop: 0 }}>
           <div style={{ width: 72, height: 72, borderRadius: "50%", background: "#E2F3EE", border: "2.5px solid #2A8C72", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, opacity: .45 }}>🎓</div>
           <div style={{ textAlign: "center" }}>
-            <strong style={{ fontSize: 14, color: "#C8C5D8", display: "block" }}>Joint Certificate</strong>
-            <span style={{ fontSize: 12, color: "#C8C5D8" }}>SGT University × LexFin</span>
+            <strong style={{ fontSize: 14, color: "#C8C5D8", display: "block" }}>{course.certificateStr}</strong>
           </div>
         </div>
       </div>

@@ -1,0 +1,37 @@
+[
+  {
+    "id": 1,
+    "question": "What is the primary purpose of an Emergency Fund?",
+    "options": ["To buy a new car", "To cover 3-6 months of essential expenses during a crisis", "To invest in the stock market", "To pay for a planned vacation"],
+    "answer": "To cover 3-6 months of essential expenses during a crisis",
+    "explanation": "An emergency fund acts as a financial safety net for unexpected events like job loss or medical emergencies."
+  },
+  {
+    "id": 2,
+    "question": "In India, which organization regulates the Securities and Capital Markets?",
+    "options": ["RBI", "SEBI", "IRDAI", "PFRDA"],
+    "answer": "SEBI",
+    "explanation": "The Securities and Exchange Board of India (SEBI) is the regulatory body for the securities and capital markets in India."
+  },
+  {
+    "id": 3,
+    "question": "What does 'Inflation' mean in simple terms?",
+    "options": ["Increase in the value of money", "Decrease in the general price level of goods", "Decline in the purchasing power of money over time", "A sudden increase in stock market prices"],
+    "answer": "Decline in the purchasing power of money over time",
+    "explanation": "Inflation is the rate at which the general level of prices for goods and services is rising, and, consequently, purchasing power is falling."
+  },
+  {
+    "id": 4,
+    "question": "Which of these is a 'Tax-Saving' investment under Section 80C of the Income Tax Act?",
+    "options": ["Fixed Deposit (1 year)", "Public Provident Fund (PPF)", "Savings Account Interest", "Gold ETF"],
+    "answer": "Public Provident Fund (PPF)",
+    "explanation": "PPF is a popular long-term investment option that offers tax benefits under Section 80C."
+  },
+  {
+    "id": 5,
+    "question": "What is the 'Rule of 72' used for?",
+    "options": ["Calculating retirement age", "Estimating how long it takes for an investment to double", "Determining the ideal credit score", "Calculating annual insurance premiums"],
+    "answer": "Estimating how long it takes for an investment to double",
+    "explanation": "Divide 72 by the annual rate of return to get the number of years it will take for your investment to double."
+  }
+]

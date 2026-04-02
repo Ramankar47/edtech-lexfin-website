@@ -28,12 +28,13 @@ function Router() {
     <Switch>
       <Route path="/" component={Landing} />
       <Route path="/courses" component={CoursesPage} />
-      <Route path="/learning-path" component={LearningPathPage} />
+      <Route path="/courses/:courseId" component={CoursesPage} />
+      <Route path="/courses/:courseId/path" component={LearningPathPage} />
       <Route path="/blogs" component={BlogsPage} />
       <Route path="/blogs/:category" component={BlogListPage} />
       <Route path="/study-material" component={StudyMaterialPage} />
       <Route path="/regulatory-alerts" component={RegulatoryAlertsPage} />
-      <Route path="/module/:moduleId/learn" component={UnitLearnPage} />
+      <Route path="/courses/:courseId/module/:moduleId/learn" component={UnitLearnPage} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/login-unavailable" component={LoginUnavailablePage} />
       <Route component={NotFound} />

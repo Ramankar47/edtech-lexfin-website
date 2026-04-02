@@ -24,17 +24,26 @@ router.get("/", async (req, res) => {
 
     const recentIds = puzzles.slice(-2).map((p) => p.id);
 
-    const result = puzzles.map((p) => ({
-      id: p.id,
-      title: p.title,
-      description: p.description,
-      difficulty: p.difficulty as "easy" | "medium" | "hard",
-      puzzleType: p.puzzleType as "scenario" | "match" | "drag_order" | "true_false",
-      xpReward: p.xpReward,
-      isNew: recentIds.includes(p.id) && !completedPuzzleIds.has(p.id),
-      isCompleted: completedPuzzleIds.has(p.id),
-      content: p.content ? JSON.parse(p.content) : null,
-    }));
+    const result = puzzles.map((p) => {
+      let parsedContent = null;
+      try {
+        parsedContent = p.content ? JSON.parse(p.content) : null;
+      } catch (e) {
+        console.error(`Failed to parse content for puzzle ${p.id}:`, e);
+      }
+
+      return {
+        id: p.id,
+        title: p.title,
+        description: p.description,
+        difficulty: p.difficulty as "easy" | "medium" | "hard",
+        puzzleType: p.puzzleType,
+        xpReward: p.xpReward,
+        isNew: recentIds.includes(p.id) && !completedPuzzleIds.has(p.id),
+        isCompleted: completedPuzzleIds.has(p.id),
+        content: parsedContent,
+      };
+    });
 
     res.json(result);
   } catch (err) {
