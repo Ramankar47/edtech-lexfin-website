@@ -5,7 +5,7 @@ export const course2: Course = {
   title: "Household Economics",
   subtitle: "Understanding Earnings, Needs, Savings, and Financial Equilibrium",
   description: "A foundational course examining how individuals and households earn, spend, and build economic resilience.",
-  duration: "14 Modules",
+  duration: "4 Weeks",
   learningHours: "15 hrs",
   certificateStr: "Beginner Certificate",
   modules: [

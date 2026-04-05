@@ -92,6 +92,7 @@ export default function CoursesPage() {
 
 function DetailView({ course, toggle, openModules, onBack }: { course: any, toggle: (id: string) => void, openModules: Set<string>, onBack: () => void }) {
   const [, setLocation] = useLocation();
+  const [showBrochureMenu, setShowBrochureMenu] = useState(false);
 
   return (
     <motion.div
@@ -118,14 +119,131 @@ function DetailView({ course, toggle, openModules, onBack }: { course: any, togg
           <p style={{ color: "#5A576B", fontSize: 16, marginTop: 8 }}>{course.subtitle}</p>
         </div>
         <div style={{ display: "flex", gap: 12 }}>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => window.open("/brochure.pdf", "_blank")}
-            style={{ padding: "12px 24px", border: "1.5px solid #5A4FD6", borderRadius: 12, background: "transparent", color: "#5A4FD6", fontWeight: 600, cursor: "pointer" }}
-          >
-            Download Brochure ⬇
-          </motion.button>
+          {course.brochureUrl ? (
+            <div style={{ position: "relative" }}>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowBrochureMenu(!showBrochureMenu)}
+                style={{
+                  padding: "12px 24px",
+                  border: "1.5px solid #5A4FD6",
+                  borderRadius: 12,
+                  background: "#5A4FD6",
+                  color: "#fff",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                <span>📄 Brochure</span>
+                <motion.span
+                  animate={{ rotate: showBrochureMenu ? 180 : 0 }}
+                  style={{ fontSize: 10, display: "inline-block" }}
+                >
+                  ▼
+                </motion.span>
+              </motion.button>
+
+              <AnimatePresence>
+                {showBrochureMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 8px)",
+                      right: 0,
+                      background: "rgba(255, 255, 255, 0.95)",
+                      backdropFilter: "blur(12px)",
+                      border: "1px solid #E0DCCE",
+                      borderRadius: 12,
+                      padding: "8px",
+                      minWidth: 160,
+                      boxShadow: "0 12px 32px rgba(0,0,0,0.1)",
+                      zIndex: 50,
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 4,
+                    }}
+                  >
+                    <button
+                      onClick={() => {
+                        window.open(course.brochureUrl, "_blank");
+                        setShowBrochureMenu(false);
+                      }}
+                      style={{
+                        padding: "10px 14px",
+                        background: "transparent",
+                        border: "none",
+                        borderRadius: 8,
+                        textAlign: "left",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "#1C1A28",
+                        cursor: "pointer",
+                        transition: "background 0.2s",
+                        fontFamily: "'DM Sans', sans-serif",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.background = "#F0EDE6")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.background = "transparent")
+                      }
+                    >
+                      👁️ View Online
+                    </button>
+                    <button
+                      onClick={() => {
+                        const link = document.createElement("a");
+                        link.href = course.brochureUrl;
+                        link.download =
+                          course.brochureUrl.split("/").pop() || "brochure.pdf";
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setShowBrochureMenu(false);
+                      }}
+                      style={{
+                        padding: "10px 14px",
+                        background: "transparent",
+                        border: "none",
+                        borderRadius: 8,
+                        textAlign: "left",
+                        fontSize: 13,
+                        fontWeight: 500,
+                        color: "#1C1A28",
+                        cursor: "pointer",
+                        transition: "background 0.2s",
+                        fontFamily: "'DM Sans', sans-serif",
+                      }}
+                      onMouseOver={(e) =>
+                        (e.currentTarget.style.background = "#F0EDE6")
+                      }
+                      onMouseOut={(e) =>
+                        (e.currentTarget.style.background = "transparent")
+                      }
+                    >
+                      ⬇️ Download PDF
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ) : (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              disabled
+              style={{ padding: "12px 24px", border: "1.5px solid #E0DCCE", borderRadius: 12, background: "transparent", color: "#9A97A8", fontWeight: 600, cursor: "not-allowed" }}
+            >
+              Brochure Coming Soon
+            </motion.button>
+          )}
           <motion.button
             whileHover={{ scale: 1.05, backgroundColor: "#3D34A5" }}
             whileTap={{ scale: 0.95 }}

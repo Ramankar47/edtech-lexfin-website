@@ -67,4 +67,5 @@ export interface Course {
   certificateStr: string;   // e.g. "SGT × LexFin"
   
   modules: ModuleData[];
+  brochureUrl?: string;
 }

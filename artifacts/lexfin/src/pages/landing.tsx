@@ -3,14 +3,16 @@ import { useLocation } from "wouter";
 import { GlobalHeader } from "@/components/GlobalHeader";
 import { motion, AnimatePresence } from "framer-motion";
 import { InteractiveLearningModal } from "@/components/InteractiveLearning";
+import { useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 
-const SLIDESHOW_IMAGES = [
-  "images/slideshow/4679196.jpg",
-  "images/slideshow/download (1).jpeg",
-  "images/slideshow/download.jpeg",
-  "images/slideshow/illustration-financial-concept_53876-20606.avif",
-  "images/slideshow/images.jpeg",
-];
+gsap.registerPlugin(ScrollTrigger);
+
+// Dynamic discover all images in the slideshow assets folder
+const slideModules = import.meta.glob('/src/assets/slideshow/*.{png,jpg,jpeg,webp,avif}', { eager: true });
+const SLIDESHOW_IMAGES = Object.values(slideModules).map((m: any) => m.default);
 
 const POPULAR_COURSES = [
   {
@@ -25,12 +27,12 @@ const POPULAR_COURSES = [
   },
   {
     num: "02",
-    title: "Advanced Corporate Law",
-    sub: "Deep dive into financial disputes",
-    duration: "15 hrs",
-    level: "Advanced",
-    icon: "⚖️",
-    tag: "Coming Soon",
+    title: "Household Economics",
+    sub: "Mastering everyday financial decisions",
+    duration: "4 Weeks",
+    level: "Foundation",
+    icon: "🏠",
+    tag: "Updated",
     link: "#"
   }
 ];
@@ -134,6 +136,8 @@ export default function Landing() {
   const [, setLocation] = useLocation();
   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
+  const containerRef = useRef<HTMLDivElement>(null);
+
   // Slideshow and Modal states
   const [activeSlide, setActiveSlide] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
@@ -141,6 +145,112 @@ export default function Landing() {
   const [modalTitle, setModalTitle] = useState("");
   const [modalContent, setModalContent] = useState<any[]>([]);
   const [loadingContent, setLoadingContent] = useState(false);
+
+  useGSAP(() => {
+    // --- HERO LOAD ANIMATION ---
+    const tl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1 } });
+    
+    tl.from(".hero-badge", { opacity: 0, x: -20, duration: 0.8 })
+      .from(".hero-title", { opacity: 0, y: 30, duration: 1 }, "-=0.6")
+      .from(".hero-description", { opacity: 0, y: 20, duration: 0.8 }, "-=0.7")
+      .from(".hero-cta", { opacity: 0, scale: 0.95, stagger: 0.15, duration: 0.8 }, "-=0.6")
+      .from(".hero-stat", { opacity: 0, y: 15, stagger: 0.1, duration: 0.8 }, "-=0.5")
+      .from(".hero-image-wrap", { opacity: 0, x: 40, scale: 0.9, duration: 1.2 }, "-=1.2");
+
+    // --- SCROLL ANIMATIONS ---
+    
+    // Why Choose LexFin Stagger
+    gsap.fromTo(".why-choose-card", 
+      { opacity: 0, y: 30 },
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".why-choose-grid",
+          start: "top bottom-=80px",
+          once: true,
+        },
+        clearProps: "all"
+      }
+    );
+
+    // Popular Courses Reveal
+    gsap.fromTo(".course-card",
+      { opacity: 0, scale: 0.96, y: 20 },
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        stagger: 0.08,
+        duration: 0.7,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: ".courses-grid",
+          start: "top bottom-=60px",
+          once: true,
+        },
+        clearProps: "all"
+      }
+    );
+
+    // --- MAGNETIC BUTTONS ---
+    const magneticBtns = gsap.utils.toArray<HTMLElement>(".hero-cta, .nav-btn");
+    magneticBtns.forEach((btn) => {
+      btn.addEventListener("mousemove", (e) => {
+        const { clientX, clientY } = e;
+        const { left, top, width, height } = btn.getBoundingClientRect();
+        const x = clientX - (left + width / 2);
+        const y = clientY - (top + height / 2);
+        gsap.to(btn, {
+          x: x * 0.3,
+          y: y * 0.3,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+      btn.addEventListener("mouseleave", () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+      });
+    });
+
+    // Section Headers Reveal
+    gsap.utils.toArray<HTMLElement>(".reveal-header").forEach(header => {
+      gsap.fromTo(header,
+        { opacity: 0, y: 20 },
+        {
+          scrollTrigger: {
+            trigger: header,
+            start: "top bottom-=40px",
+            once: true,
+          },
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+          clearProps: "all"
+        }
+      );
+    });
+  }, { scope: containerRef }); // No dependencies - only runs once for stability
+
+  // Second hook specifically for the background slideshow Ken Burns effect
+  useGSAP(() => {
+    if (!activeSlide) return;
+    
+    gsap.fromTo(".active-slide-img", 
+      { scale: 1 }, 
+      { 
+        scale: 1.1, 
+        duration: 5, 
+        ease: "none",
+        rotate: 0.01,
+      }
+    );
+  }, { dependencies: [activeSlide], scope: containerRef });
+
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -181,6 +291,7 @@ export default function Landing() {
 
   return (
     <div
+      ref={containerRef}
       style={{
         minHeight: "100vh",
         background: "#F0EDE6",
@@ -324,6 +435,7 @@ export default function Landing() {
 
       {/* ─── HERO ─────────────────────────────────────────── */}
       <section
+        className="hero-section"
         style={{
           flex: 1,
           display: "flex",
@@ -347,6 +459,7 @@ export default function Landing() {
           {/* Left text */}
           <div style={{ flex: 1, minWidth: 300 }}>
             <div
+              className="hero-badge"
               style={{
                 display: "inline-flex",
                 alignItems: "center",
@@ -372,6 +485,7 @@ export default function Landing() {
             </div>
 
             <h1
+              className="hero-title"
               style={{
                 fontFamily: "'Fraunces', serif",
                 fontSize: "clamp(34px, 4.5vw, 56px)",
@@ -389,6 +503,7 @@ export default function Landing() {
             </h1>
 
             <p
+              className="hero-description"
               style={{
                 fontSize: 16,
                 color: "#5A576B",
@@ -405,6 +520,7 @@ export default function Landing() {
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
               <button
                 onClick={() => setLocation("/courses/1/path")}
+                className="hero-cta"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -445,6 +561,7 @@ export default function Landing() {
 
               <button
                 onClick={() => setLocation("/courses")}
+                className="hero-cta"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -476,7 +593,7 @@ export default function Landing() {
                 { val: "30 hrs", label: "Content" },
                 { val: "SGT University", label: "Certificate" },
               ].map((s) => (
-                <div key={s.label}>
+                <div key={s.label} className="hero-stat">
                   <div
                     style={{
                       fontFamily: "'Fraunces', serif",
@@ -497,6 +614,7 @@ export default function Landing() {
 
           {/* Right image */}
           <div
+            className="hero-image-wrap"
             style={{ flex: "0 0 auto", position: "relative", maxWidth: 460 }}
           >
             <div
@@ -510,6 +628,7 @@ export default function Landing() {
               }}
             />
             <img
+              className="hero-image"
               src={`${import.meta.env.BASE_URL}images/hero-legal-finance.jpg`}
               alt="LexFin — Financial & Legal Literacy"
               style={{
@@ -536,33 +655,48 @@ export default function Landing() {
       <section
         style={{
           width: "100%",
-          height: "60vh",
-          minHeight: 400,
+          aspectRatio: "16 / 9",
+          maxHeight: "80vh",
+          minHeight: 350,
           position: "relative",
           overflow: "hidden",
           borderTop: "1px solid #E0DCCE",
+          background: "#F0EDE6",
+          padding: "40px",
         }}
       >
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSlide}
-            initial={{ opacity: 0, scale: 1.03 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.03 }}
-            transition={{ duration: 1.8 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
             style={{
               position: "absolute",
               inset: 0,
-              backgroundImage: `url("${import.meta.env.BASE_URL}${SLIDESHOW_IMAGES[activeSlide]}")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+              overflow: "hidden"
             }}
-          />
+          >
+            <div
+              className="active-slide-img"
+              style={{
+                width: "100%",
+                height: "100%",
+                backgroundImage: `url("${SLIDESHOW_IMAGES[activeSlide]}")`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center",
+                willChange: "transform",
+                imageRendering: "crisp-edges" as any,
+              }}
+            />
+          </motion.div>
         </AnimatePresence>
 
         {/* ─── BORDER FADE EFFECTS ────────────────────────────── */}
-        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to bottom, #F0EDE6 0%, transparent 12%, transparent 88%, #F9F9F9 100%)" }} />
-        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to right, #F0EDE6 0%, transparent 8%, transparent 92%, #F0EDE6 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to bottom, #F0EDE6 0%, transparent 0.5%, transparent 99.5%, #F0EDE6 100%)" }} />
+        <div style={{ position: "absolute", inset: 0, zIndex: 1, pointerEvents: "none", background: "linear-gradient(to right, #F0EDE6 0%, transparent 0.5%, transparent 99.5%, #F0EDE6 100%)" }} />
 
       </section>
 
@@ -577,7 +711,7 @@ export default function Landing() {
       >
         <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
           {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: 52 }}>
+          <div className="reveal-header" style={{ textAlign: "center", marginBottom: 52 }}>
             <div
               style={{
                 display: "inline-flex",
@@ -620,11 +754,13 @@ export default function Landing() {
             </h2>
             <p
               style={{
-                fontSize: 15,
+                fontSize: 16,
                 color: "#5A576B",
-                lineHeight: 1.65,
-                maxWidth: 500,
+                lineHeight: 1.6,
+                maxWidth: "900px",
                 margin: "0 auto",
+                textAlign: "center",
+                padding: "0 20px",
               }}
             >
               We combine India's legal framework with real financial education —
@@ -634,6 +770,7 @@ export default function Landing() {
 
           {/* Cards grid */}
           <div
+            className="why-choose-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
@@ -641,10 +778,13 @@ export default function Landing() {
             }}
           >
             {WHY_CHOOSE.map((item) => (
-              <motion.div
+              <div
                 key={item.num}
-                whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(90,79,214,.15)" }}
+                className="why-choose-card lp-card"
                 style={{
+                  height: "100%",
+                  minHeight: 220,
+                  opacity: 0, // Initial state for GSAP
                   background: "rgba(255, 255, 255, 0.8)",
                   backdropFilter: "blur(8px)",
                   border: "1.5px solid rgba(224, 220, 206, 0.8)",
@@ -724,7 +864,7 @@ export default function Landing() {
                 >
                   {item.desc}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -743,7 +883,7 @@ export default function Landing() {
               gap: 16,
             }}
           >
-            <div>
+            <div className="reveal-header">
               <div
                 style={{
                   display: "inline-flex",
@@ -815,6 +955,7 @@ export default function Landing() {
           </div>
 
           <div
+            className="courses-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
@@ -824,27 +965,10 @@ export default function Landing() {
             {POPULAR_COURSES.map((course) => (
               <div
                 key={course.num}
+                className="course-card lp-card"
                 onClick={() => setLocation("/courses")}
                 style={{
-                  background: "#FAFAF7",
-                  border: "1.5px solid #E0DCCE",
-                  borderRadius: 16,
-                  padding: "24px",
-                  cursor: "pointer",
-                  transition: "all .2s",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.borderColor = "#5A4FD6";
-                  e.currentTarget.style.boxShadow =
-                    "0 6px 24px rgba(90,79,214,.12)";
-                  e.currentTarget.style.transform = "translateY(-2px)";
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.borderColor = "#E0DCCE";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.transform = "translateY(0)";
+                  opacity: 0, // Initial state for GSAP
                 }}
               >
                 {course.tag && (
@@ -981,7 +1105,7 @@ export default function Landing() {
               }}
             />
           </div>
-          <div style={{ flex: 1.2, minWidth: 320 }}>
+          <div className="reveal-header" style={{ flex: 1.2, minWidth: 320 }}>
             <div
               style={{
                 display: "inline-flex",
@@ -1063,7 +1187,7 @@ export default function Landing() {
             flexWrap: "wrap-reverse",
           }}
         >
-          <div style={{ flex: 1.2, minWidth: 320 }}>
+          <div className="reveal-header" style={{ flex: 1.2, minWidth: 320 }}>
             <div
               style={{
                 display: "inline-flex",
@@ -1187,7 +1311,7 @@ export default function Landing() {
             flexWrap: "wrap",
           }}
         >
-          <div style={{ flex: 1, minWidth: 280 }}>
+          <div className="reveal-header" style={{ flex: 1, minWidth: 280 }}>
             <div
               style={{
                 display: "inline-flex",
@@ -1324,7 +1448,7 @@ export default function Landing() {
       <section style={{ padding: "80px 48px", background: "#F0EDE6" }}>
         <div style={{ maxWidth: 860, margin: "0 auto" }}>
           {/* Header */}
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
+          <div className="reveal-header" style={{ textAlign: "center", marginBottom: 48 }}>
             <div
               style={{
                 display: "inline-flex",
@@ -1564,7 +1688,7 @@ export default function Landing() {
           }}
         >
           {/* Contact */}
-          <div>
+          <div className="reveal-header">
             <div
               style={{
                 display: "inline-flex",
@@ -1696,7 +1820,7 @@ export default function Landing() {
           </div>
 
           {/* Location */}
-          <div>
+          <div className="reveal-header">
             <div
               style={{
                 display: "inline-flex",

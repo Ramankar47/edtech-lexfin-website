@@ -21,14 +21,14 @@ type Category = {
   count: number;
 };
 
-const CATEGORIES: Category[] = [
+const CATEGORIES_BASE: Category[] = [
   {
     icon: "🏦",
     org: "RBI",
     name: "Reserve Bank of India",
     desc: "Monetary policy, digital lending guidelines, and banking circulars.",
     color: "#2563EB",
-    count: 3,
+    count: 0,
   },
   {
     icon: "📈",
@@ -36,7 +36,7 @@ const CATEGORIES: Category[] = [
     name: "Securities & Exchange Board of India",
     desc: "Market regulations, insider trading rules, investor protection updates.",
     color: "#16A34A",
-    count: 2,
+    count: 0,
   },
   {
     icon: "🛡️",
@@ -44,7 +44,7 @@ const CATEGORIES: Category[] = [
     name: "Insurance Regulatory Authority",
     desc: "Insurance product norms, grievance redressal, claim settlement updates.",
     color: "#9333EA",
-    count: 1,
+    count: 0,
   },
   {
     icon: "⚖️",
@@ -52,7 +52,7 @@ const CATEGORIES: Category[] = [
     name: "Ministry of Corporate Affairs",
     desc: "Company law amendments, compliance filings, and corporate governance.",
     color: "#B45309",
-    count: 1,
+    count: 0,
   },
   {
     icon: "💰",
@@ -60,7 +60,7 @@ const CATEGORIES: Category[] = [
     name: "Central Board of Direct Taxes",
     desc: "Income tax circulars, AIS/TIS updates, new ITR forms and deadlines.",
     color: "#DC2626",
-    count: 2,
+    count: 0,
   },
   {
     icon: "🌐",
@@ -68,122 +68,73 @@ const CATEGORIES: Category[] = [
     name: "GST Network",
     desc: "GST rate changes, return filing updates, and ITC reconciliation guidance.",
     color: "#0891B2",
-    count: 1,
+    count: 0,
   },
 ];
 
 const ALERTS: Alert[] = [
   {
-    id: "rbi-1",
+    id: "rbi-2026-1",
     org: "RBI",
     orgColor: "#2563EB",
-    date: "Mar 2025",
-    title: "Digital Lending Guidelines — Updated KYC Norms",
+    date: "January 2026",
+    title: "RBI Amendments on NBFC Capital Adequacy & Risk Framework",
     summary:
-      "RBI has revised KYC requirements for digital lenders, mandating video-based verification and stricter data localisation norms for all NBFCs operating lending apps.",
+      "In January 2026, RBI issued amendments to NBFC prudential norms and capital adequacy frameworks, refining risk weights and improving consistency in lending to infrastructure projects. These changes aim to strengthen financial stability and risk management. The Reserve Bank of India (RBI) has significantly strengthened the regulatory framework for Non-Banking Financial Companies (NBFCs) through its Scale-Based Regulation (SBR) approach, which classifies NBFCs into different layers based on size and systemic importance. Under this framework, higher-layer NBFCs are subject to stricter capital adequacy.",
     tag: "Banking",
   },
   {
-    id: "rbi-2",
-    org: "RBI",
-    orgColor: "#2563EB",
-    date: "Feb 2025",
-    title: "Monetary Policy Committee: Repo Rate Held at 6.5%",
-    summary:
-      "The MPC voted to hold the repo rate steady, citing persistent core inflation. The standing deposit facility rate remains at 6.25%.",
-    tag: "Monetary Policy",
-  },
-  {
-    id: "rbi-3",
-    org: "RBI",
-    orgColor: "#2563EB",
-    date: "Jan 2025",
-    title: "Circular on Co-lending Arrangements Between Banks and NBFCs",
-    summary:
-      "New guidelines clarify responsibility sharing, credit appraisal standards, and NPA classification rules in co-lending partnerships.",
-    tag: "NBFC",
-  },
-  {
-    id: "sebi-1",
+    id: "sebi-2026-1",
     org: "SEBI",
     orgColor: "#16A34A",
-    date: "Mar 2025",
-    title: "Insider Trading Amendment — WhatsApp Groups Under Scanner",
+    date: "February 2026",
+    title: "SEBI (LODR) Amendment Regulations, 2026",
     summary:
-      "SEBI strengthens the definition of 'connected persons' to include members of informal communication channels suspected of trading on UPSI.",
+      "In February 2026, SEBI introduced amendments to the Listing Obligations and Disclosure Requirements (LODR) Regulations, emphasizing enhanced transparency and corporate governance for listed entities. These amendments require companies to provide more detailed disclosures regarding related-party transactions and ESG (Environmental, Social, and Governance) metrics. The new rules also aim to streamline the process for rights issues and public offerings, reducing the compliance burden for smaller listed companies while maintaining high standards of investor protection.",
     tag: "Securities",
   },
   {
-    id: "sebi-2",
-    org: "SEBI",
-    orgColor: "#16A34A",
-    date: "Feb 2025",
-    title: "New ESG Disclosure Framework for Listed Companies",
-    summary:
-      "All top-1000 listed companies must now publish Business Responsibility and Sustainability Reports (BRSR) with verified ESG metrics starting FY 2024–25.",
-    tag: "Compliance",
-  },
-  {
-    id: "irdai-1",
-    org: "IRDAI",
+    id: "ibbi-2026-1",
+    org: "IBBI",
     orgColor: "#9333EA",
-    date: "Jan 2025",
-    title: "Bima Sugam: Unified Insurance Platform Launch",
+    date: "March 2026",
+    title: "IBBI Updated Guidelines for Resolution Professionals",
     summary:
-      "IRDAI's e-marketplace Bima Sugam goes live, integrating policy issuance, claim settlement, and grievance redressal under one digital umbrella.",
-    tag: "Insurance",
+      "In March 2026, the Insolvency and Bankruptcy Board of India (IBBI) issued updated guidelines for Resolution Professionals (RPs) to improve the efficiency and transparency of the Corporate Insolvency Resolution Process (CIRP). The new guidelines provide clearer instructions on the valuation of assets, the conduct of committee of creditors (CoC) meetings, and the timely submission of resolution plans. Additionally, IBBI has introduced a standardized reporting format for RPs to ensure consistency across different insolvency cases.",
+    tag: "Insolvency",
   },
   {
-    id: "mca-1",
-    org: "MCA",
-    orgColor: "#B45309",
-    date: "Feb 2025",
-    title: "Companies (Amendment) Rules 2025 — Director KYC Deadline",
-    summary:
-      "MCA mandates annual DIR-3 KYC for all active directors by September 30. Failure attracts ₹5,000 penalty and deactivation of DIN.",
-    tag: "Corporate Law",
-  },
-  {
-    id: "cbdt-1",
+    id: "cbdt-2026-1",
     org: "CBDT",
     orgColor: "#DC2626",
-    date: "Mar 2025",
-    title: "New ITR Forms Notified for AY 2025–26",
+    date: "January 2026",
+    title: "CBDT Notification on New ITR Forms (AY 2026-27)",
     summary:
-      "CBDT releases the updated ITR-1 through ITR-7 forms for Assessment Year 2025–26, with new schedules for crypto income and foreign assets.",
-    tag: "Income Tax",
-  },
-  {
-    id: "cbdt-2",
-    org: "CBDT",
-    orgColor: "#DC2626",
-    date: "Jan 2025",
-    title: "AIS/TIS Enhancements: New Transaction Categories Added",
-    summary:
-      "Annual Information Statement now includes dividends, securities transactions, and overseas remittances. Taxpayers must reconcile before filing returns.",
-    tag: "Income Tax",
-  },
-  {
-    id: "gstn-1",
-    org: "GSTN",
-    orgColor: "#0891B2",
-    date: "Feb 2025",
-    title: "GST Council: Rate Rationalisation for Healthcare & Insurance",
-    summary:
-      "The GST Council recommends reducing GST on term insurance premiums to 12% and health insurance for seniors to 5%, pending ministerial approval.",
-    tag: "GST",
+      "The Central Board of Direct Taxes (CBDT) has notified the new Income Tax Return (ITR) forms for the Assessment Year 2026-27. These forms include additional sections for disclosing income from virtual digital assets (VDAs) and foreign assets. The CBDT has also simplified the process for claiming tax deductions under various sections of the Income Tax Act, aiming to make tax filing more user-friendly and reduce the scope for errors. The new forms are expected to facilitate faster processing of returns and quicker issuance of tax refunds.",
+    tag: "Taxation",
   },
 ];
 
+const CATEGORIES = CATEGORIES_BASE.map(cat => ({
+  ...cat,
+  count: ALERTS.filter(a => a.org === cat.org).length
+}));
+
 export default function RegulatoryAlertsPage() {
   const [activeFilter, setActiveFilter] = useState<string>("All");
+  const [activeMonth, setActiveMonth] = useState<string>("All");
 
-  const filters = ["All", ...CATEGORIES.map((c) => c.org)];
+  const orgFilters = ["All", ...CATEGORIES.map((c) => c.org)];
+  const monthFilters = ["All", "January", "February", "March"];
 
-  const filteredAlerts =
-    activeFilter === "All"
-      ? ALERTS
-      : ALERTS.filter((a) => a.org === activeFilter);
+  const filteredAlerts = ALERTS.filter((alert) => {
+    const matchesOrg = activeFilter === "All" || alert.org === activeFilter;
+    const matchesMonth = 
+      activeMonth === "All" || 
+      alert.date.toLowerCase().includes(activeMonth.toLowerCase()) ||
+      (activeMonth.length >= 3 && alert.date.toLowerCase().startsWith(activeMonth.toLowerCase().substring(0, 3)));
+    return matchesOrg && matchesMonth;
+  });
 
   return (
     <div
@@ -378,27 +329,65 @@ export default function RegulatoryAlertsPage() {
           <span
             style={{ fontSize: 13, color: "#9A97A8", fontWeight: 500, marginRight: 4 }}
           >
-            Filter:
+            Regulator:
           </span>
-          {filters.map((f) => (
+          {orgFilters.map((f) => (
             <button
               key={f}
               onClick={() => setActiveFilter(f)}
               style={{
                 fontSize: 13,
                 fontWeight: 500,
-                padding: "5px 14px",
+                padding: "6px 16px",
                 borderRadius: 100,
                 border: "1.5px solid",
                 cursor: "pointer",
                 transition: "all .15s",
                 fontFamily: "'DM Sans', sans-serif",
                 background: activeFilter === f ? "#5A4FD6" : "transparent",
-                borderColor: activeFilter === f ? "#5A4FD6" : "#D4D0C8",
+                borderColor: activeFilter === f ? "#5A4FD6" : "#E0DCCE",
                 color: activeFilter === f ? "#fff" : "#5A576B",
               }}
             >
               {f}
+            </button>
+          ))}
+        </div>
+
+        {/* Month Filter */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 32,
+            flexWrap: "wrap",
+          }}
+        >
+          <span
+            style={{ fontSize: 13, color: "#9A97A8", fontWeight: 500, marginRight: 4 }}
+          >
+            Month:
+          </span>
+          {monthFilters.map((m) => (
+            <button
+              key={m}
+              onClick={() => setActiveMonth(m)}
+              style={{
+                fontSize: 13,
+                fontWeight: 500,
+                padding: "6px 16px",
+                borderRadius: 100,
+                border: "1.5px solid",
+                cursor: "pointer",
+                transition: "all .15s",
+                fontFamily: "'DM Sans', sans-serif",
+                background: activeMonth === m ? "#1C1A28" : "transparent",
+                borderColor: activeMonth === m ? "#1C1A28" : "#E0DCCE",
+                color: activeMonth === m ? "#fff" : "#5A576B",
+              }}
+            >
+              {m === "All" ? "All Months" : m}
             </button>
           ))}
           <span
