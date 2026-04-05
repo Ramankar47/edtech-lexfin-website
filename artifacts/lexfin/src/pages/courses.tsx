@@ -422,18 +422,30 @@ function CourseCard({ course, isRight }: { course: any, isRight: boolean }) {
   const [, setLocation] = useLocation();
   const [imgIdx, setImgIdx] = useState(0);
   
-  const images = [
-    `https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=800`,
-    `https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&q=80&w=800`,
-    `https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800`
-  ];
+  // Use String comparison to ensure ID matching works regardless of data type
+  const BASE_URL = import.meta.env.BASE_URL;
+  const images = String(course.id) === "1"
+    ? [
+        `${BASE_URL}images/mentor-female.png`, // Professional Female Mentor (Replaces Lady Justice)
+        `${BASE_URL}images/mentor-male.png`,   // Professional Male Mentor (Advocate)
+        "https://images.unsplash.com/photo-1521791055366-0d553874b28f?auto=format&fit=crop&q=80&w=800", // Professional Consultation
+        "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800", // Old Law Books
+        "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800"  // Legal Documents
+      ]
+    : [
+        "https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&q=80&w=800", // Calculator & Finance (Verified)
+        "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&q=80&w=800", // Savings/Growth
+        "https://images.unsplash.com/photo-1621416894569-0f39ed31d247?auto=format&fit=crop&q=80&w=800", // Modern Wealth
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800", // Market Analytics
+        "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800"  // Real Estate/Assets
+      ];
 
   useEffect(() => {
     const timer = setInterval(() => {
       setImgIdx(prev => (prev + 1) % images.length);
-    }, 4000);
+    }, 4500);
     return () => clearInterval(timer);
-  }, []);
+  }, [images.length]);
 
   return (
     <motion.div 
@@ -444,15 +456,15 @@ function CourseCard({ course, isRight }: { course: any, isRight: boolean }) {
       className="bg-[#FAFAF7] border-[1.5px] border-[#E0DCCE] rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
       style={{ display: "flex", flexDirection: "column" }}
     >
-      <div style={{ position: "relative", height: 260, background: "#1C1A28", overflow: "hidden" }}>
+      <div style={{ position: "relative", height: 260, background: "#0A0910", overflow: "hidden" }}>
         <AnimatePresence mode="wait">
           <motion.img 
             key={images[imgIdx]}
             src={images[imgIdx]}
-            initial={{ opacity: 0, scale: 1.15 }}
-            animate={{ opacity: 0.65, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 1.2 }}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 0.85, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }}
           />
         </AnimatePresence>

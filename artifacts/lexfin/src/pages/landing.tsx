@@ -216,19 +216,26 @@ export default function Landing() {
       });
     });
 
-    // Section Headers Reveal
-    gsap.utils.toArray<HTMLElement>(".reveal-header").forEach(header => {
-      gsap.fromTo(header,
-        { opacity: 0, y: 20 },
+    // Reveal Animations (Images & Headers)
+    const revealElements = gsap.utils.toArray<HTMLElement>(".reveal-header, .reveal-image");
+    revealElements.forEach(el => {
+      const isImage = el.classList.contains("reveal-image");
+      gsap.fromTo(el,
+        { 
+          opacity: 0, 
+          y: isImage ? 0 : 20, 
+          scale: isImage ? 0.95 : 1 
+        },
         {
           scrollTrigger: {
-            trigger: header,
-            start: "top bottom-=40px",
+            trigger: el,
+            start: "top bottom-=60px",
             once: true,
           },
           opacity: 1,
           y: 0,
-          duration: 0.8,
+          scale: 1,
+          duration: isImage ? 1.2 : 0.8,
           ease: "power3.out",
           clearProps: "all"
         }
@@ -1093,14 +1100,14 @@ export default function Landing() {
             flexWrap: "wrap",
           }}
         >
-          <div style={{ flex: 1, minWidth: 320 }}>
+          <div className="reveal-image" style={{ flex: 1, minWidth: 320, aspectRatio: "16 / 10", overflow: "hidden", borderRadius: 20 }}>
             <img
               src={`${import.meta.env.BASE_URL}images/sgt-university-campus.jpg`}
               alt="SGT University Campus"
               style={{
                 width: "100%",
-                height: "auto",
-                borderRadius: 20,
+                height: "100%",
+                objectFit: "cover",
                 boxShadow: "0 12px 32px rgba(0,0,0,0.08)",
               }}
             />
@@ -1248,14 +1255,14 @@ export default function Landing() {
               By bridging the gap between theoretical knowledge and real-world financial understanding, LexFin empowers learners with essential tools for informed decision-making in savings, budgeting, and regulatory frameworks like RBI and SEBI.
             </p>
           </div>
-          <div style={{ flex: 1, minWidth: 320 }}>
+          <div className="reveal-image" style={{ flex: 1, minWidth: 320, aspectRatio: "16 / 10", overflow: "hidden", borderRadius: 20 }}>
             <img
               src={`${import.meta.env.BASE_URL}images/lexfin-initiative-banner.jpg`}
               alt="LexFin Initiative Banner"
               style={{
                 width: "100%",
-                height: "auto",
-                borderRadius: 20,
+                height: "100%",
+                objectFit: "cover",
                 boxShadow: "0 12px 32px rgba(0,0,0,0.08)",
               }}
             />

@@ -16,7 +16,60 @@ const XLSX = require("xlsx");
 
 const router: IRouter = Router();
 
-const CONTENT_DIR = path.resolve(process.cwd(), "../../content/modules");
+const CONTENT_DIR = path.resolve(process.cwd(), "../../content");
+
+// Generic Course/Module media handler for Course placeholders (matches Course1/Module1/Unit1/...)
+router.get("/:cId/:mId/:uId/:type/media", (req, res) => {
+  const { cId, mId, uId, type } = req.params;
+  
+  // Clean prefixes if present (Course1 -> 1, Module1 -> 1, Unit1 -> 1)
+  const courseId = cId.replace(/^Course/i, "");
+  const moduleId = mId.replace(/^Module/i, "");
+  const unitNumber = uId.replace(/^Unit/i, "");
+  
+  const isAudio = type.toLowerCase() === "audios" || type.toLowerCase() === "audio";
+  const subFolder = isAudio ? "audio" : "video";
+  const dirPath = path.join(CONTENT_DIR, `Course${courseId}`, `Module${moduleId}`, subFolder);
+
+  if (!fs.existsSync(dirPath)) {
+    console.log(`Media folder not found: ${dirPath}`);
+    res.status(404).end();
+    return;
+  }
+
+  try {
+    const files = fs.readdirSync(dirPath);
+    // Find matching file
+    let targetFile = null;
+    if (isAudio) {
+      // Audio: Look for `lesson[unitNumber](audio)` pattern first
+      targetFile = files.find(f => 
+        f.toLowerCase().startsWith(`lesson${unitNumber}(audio)`) && 
+        ['.mp3', '.wav', '.m4a', '.aac'].includes(path.extname(f).toLowerCase())
+      );
+    } else {
+      // Video: Look for any video file in the folder (since they named it 'The Foundation')
+      targetFile = files.find(f => 
+        ['.mp4', '.m4v', '.webm', '.ogg'].includes(path.extname(f).toLowerCase())
+      );
+    }
+
+    if (!targetFile) {
+      // Fallback: Pick the first file in the directory that is not hidden
+      targetFile = files.find(f => !f.startsWith('.'));
+    }
+
+    if (!targetFile) {
+      res.status(404).end();
+      return;
+    }
+
+    res.sendFile(path.join(dirPath, targetFile));
+  } catch (err) {
+    console.error(`Media serve error:`, err);
+    res.status(500).end();
+  }
+});
 
 const MODULE_DIRS: Record<number, string> = {
   1: "module-1-consumer-protection-law",
